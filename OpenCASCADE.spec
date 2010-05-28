@@ -40,16 +40,17 @@ Patch16:         OpenCASCADE6.3.0-WOKUnix_FDescr.patch
 URL:		http://www.opencascade.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
+BuildRequires:	java-sun-jdk-base
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	Mesa-libGLU-devel
+BuildRequires:	tk-devel
 BuildRequires:  bison flex tcl-devel tk-devel
 %ifarch i586
 BuildRequires:   compat
 %else
 BuildRequires:   compat-32bit
 %endif
-BuildRequires:   java-1_5_0-gcj-compat-devel
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXmu-devel
 BuildRequires:	xorg-proto-xproto-devel
@@ -115,18 +116,13 @@ export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 export CXXFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 %endif
 LDFLAGS=-lpthread %configure \
-   --with-gl-include=/usr/include \
-   --with-gl-library=/usr/%{_lib} \
-   --with-xmu-include=/usr/include/X11 \
-   --with-xmu-library=/usr/%{_lib} \
-   --with-tcl=/usr/%{_lib} \
-   --with-tk=/usr/%{_lib} \
    --disable-static \
    --disable-debug \
    --enable-production \
+   --enable-draw \
    --enable-wok \
    --enable-wrappers \
-   --enable-draw
+	--with-java-include=/usr/lib64/jvm/java/include
 
 %{__make}
 
