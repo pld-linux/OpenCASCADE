@@ -1,6 +1,4 @@
 #
-# spec file for package OpenCASCADE
-#
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
 # upon. The license for this file, and modifications and additions to the
@@ -10,19 +8,18 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-# norootforbuild
-
 %define _prefix /opt/OpenCASCADE
 
-Name:            OpenCASCADE
-Summary:    	 OpenCASCADE CAE platform
-Url:             http://www.opencascade.org/
+Name:		OpenCASCADE
+Summary:	OpenCASCADE CAE platform
 Group:           Productivity/Other
-Version:         6.3.0
+# The 6.3.1 is a maintenance release, only available for OCC customers
+Version:	6.3.0
 Release:         40.3
-License:         LGPL-like, see http://www.opencascade.org/occ/license/
+License:	LGPL-like, see http://www.opencascade.org/occ/license/
 Packager:        Andrea Florio <andrea@opensuse.org>
-Source0:         %{name}%{version}.tar.bz2
+Source0:	http://files.opencascade.com/OCC_6.3_release/%{name}_src.tgz
+# Source0-md5:	52778127974cb3141c2827f9d40d1f11
 Source1:	 %name.conf
 Source2:	 OpenCASCADE-rpmlintrc
 Patch0:          OpenCASCADE6.3.0-obs-check.patch
@@ -42,6 +39,7 @@ Patch13:         OpenCASCADE6.3.0-make-draw-libs-private.patch
 Patch14:         OpenCASCADE6.3.0-wok-install.patch
 Patch15:         OpenCASCADE6.3.0-udlist.patch
 Patch16:         OpenCASCADE6.3.0-WOKUnix_FDescr.patch
+URL:		http://www.opencascade.org/
 
 BuildRequires:   Mesa-devel autoconf automake bison gcc-c++ xorg-x11-devel
 BuildRequires:   flex libtool tcl-devel tk-devel xorg-x11-libXmu-devel fdupes
@@ -231,15 +229,3 @@ rm -rf %buildroot
 %dir %{_prefix}/samples
 %{_prefix}/samples/*
 %exclude %{_prefix}/src/UnitsAPI/*.dat
-
-%changelog
-* Fri Dec  4 2009 andrea@opensuse.org
-- enabled wrappers
-* Sat May  2 2009 andrea@opensuse.org
-- added some symlink to provide compatibility with soma packages
-* Tue Feb 10 2009 andrea@opensuse.org
-- moved *.dat to main package, not sources and some packages need them
-* Wed Oct 29 2008 lars@linux-schulserver.de
-- ignore post-build-checks until /opt is allowed again
-* Sat Sep 27 2008 Andrea Florio <andrea@opensuse.org> 6.3.0
-- new package
