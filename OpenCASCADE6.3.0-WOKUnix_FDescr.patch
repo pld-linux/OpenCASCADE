@@ -1,0 +1,12 @@
+diff -uNr OpenCASCADE6.3.0-old/ros/src/WOKUnix/WOKUnix_FDescr.cxx OpenCASCADE6.3.0/ros/src/WOKUnix/WOKUnix_FDescr.cxx
+--- OpenCASCADE6.3.0-old/ros/src/WOKUnix/WOKUnix_FDescr.cxx	2008-05-08 15:11:16.000000000 +0200
++++ OpenCASCADE6.3.0/ros/src/WOKUnix/WOKUnix_FDescr.cxx	2008-10-02 22:53:09.000000000 +0200
+@@ -202,7 +202,7 @@
+   if(mknod(apath.ToCString(), 0700 |  S_IFIFO, 0)) 
+     { perror(apath.ToCString());}
+ 
+-  myFileChannel = open(apath.ToCString(),  O_RDONLY | O_NDELAY | O_CREAT);
++  myFileChannel = open(apath.ToCString(), O_RDONLY | O_NDELAY | O_CREAT, S_IRUSR);
+   SetUnBuffered();
+ 
+   // write end of pipe is unbuffered also 

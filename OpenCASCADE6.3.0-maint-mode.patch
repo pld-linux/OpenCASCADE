@@ -1,0 +1,12 @@
+diff -uNr OpenCASCADE6.3.0-old/ros/configure.in OpenCASCADE6.3.0/ros/configure.in
+--- OpenCASCADE6.3.0-old/ros/configure.in	2008-10-02 23:51:27.000000000 +0200
++++ OpenCASCADE6.3.0/ros/configure.in	2008-10-02 23:55:10.000000000 +0200
+@@ -12,7 +12,7 @@
+ 
+ AM_CONFIG_HEADER(config.h)
+ 
+-dnl AM_MAINTAINER_MODE
++AM_MAINTAINER_MODE
+ 
+ AC_AIX
+ AC_ISC_POSIX

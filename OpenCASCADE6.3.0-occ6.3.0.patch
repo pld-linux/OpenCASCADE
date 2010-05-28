@@ -1,0 +1,74 @@
+diff -uNr OpenCASCADE6.3.0-old/ros/configure.in OpenCASCADE6.3.0/ros/configure.in
+--- OpenCASCADE6.3.0-old/ros/configure.in	2008-10-02 23:27:17.000000000 +0200
++++ OpenCASCADE6.3.0/ros/configure.in	2008-10-02 23:36:00.000000000 +0200
+@@ -127,8 +127,8 @@
+ def_ios_ok,
+ [AC_LANG([C++])
+  AC_TRY_COMPILE([#include <stream.h>
+-static const int input = (ios::in) | (ios::nocreate);
+-static const int output= (ios::out);],
++static const int input = (std::ios::in) | (std::ios::nocreate);
++static const int output= (std::ios::out);],
+ [return 0;],
+  def_ios_ok=yes, def_ios_ok=no)
+ ])
+@@ -141,7 +141,7 @@
+ ostream_form_ok,
+ [AC_LANG([C++])
+  AC_TRY_COMPILE([#include <iostream.h>],
+-[cout << cout.form("%9.3e", 3.14159627e-4) << endl;
++[std::cout << std::cout.form("%9.3e", 3.14159627e-4) << std::endl;
+ return 0;],
+  ostream_form_ok=yes, ostream_form_ok=no)
+ ])
+diff -uNr OpenCASCADE6.3.0-old/ros/inc/Standard_Stream.hxx OpenCASCADE6.3.0/ros/inc/Standard_Stream.hxx
+--- OpenCASCADE6.3.0-old/ros/inc/Standard_Stream.hxx	2007-10-09 16:04:46.000000000 +0200
++++ OpenCASCADE6.3.0/ros/inc/Standard_Stream.hxx	2008-10-02 23:36:00.000000000 +0200
+@@ -24,26 +24,12 @@
+ // Unix variant
+ #ifndef WNT
+ 
+-#ifdef HAVE_IOSTREAM
+   #include <iostream>
+   #define USE_STL_STREAM
+-#elif defined (HAVE_IOSTREAM_H)
+-  #include <iostream.h>
+-#else
+-  #error "check config.h file or compilation options: either HAVE_IOSTREAM or HAVE_IOSTREAM_H should be defined"
+-#endif
+ 
+-#ifdef HAVE_IOMANIP
+   #include <iomanip>
+-#elif defined (HAVE_IOMANIP_H)
+-  #include <iomanip.h>
+-#endif
+ 
+-#ifdef HAVE_FSTREAM
+   #include <fstream>
+-#elif defined (HAVE_FSTREAM_H)
+-  #include <fstream.h>
+-#endif
+ 
+ // Windows variant
+ #else /* WNT */
+diff -uNr OpenCASCADE6.3.0-old/ros/inc/Standard_values.h OpenCASCADE6.3.0/ros/inc/Standard_values.h
+--- OpenCASCADE6.3.0-old/ros/inc/Standard_values.h	2005-04-21 16:32:46.000000000 +0200
++++ OpenCASCADE6.3.0/ros/inc/Standard_values.h	2008-10-02 23:36:00.000000000 +0200
+@@ -23,17 +23,7 @@
+ #endif
+ 
+ #ifndef WNT
+-#ifdef HAVE_CONFIG_H
+-# include <config.h>
+-#endif
+-
+-#ifdef HAVE_LIMITS
+-# include <limits>
+-#elif defined (HAVE_LIMITS_H)
+ # include <limits.h>
+-#else
+-#error "check config.h file or compilation options: either HAVE_LIMITS or HAVE_LIMITS_H should be defined"
+-#endif
+ #endif
+ 
+ 

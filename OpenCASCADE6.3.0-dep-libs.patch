@@ -1,0 +1,48 @@
+diff -uNr OpenCASCADE6.3.0-old/ros/adm/make/TKDraw/Makefile.am OpenCASCADE6.3.0/ros/adm/make/TKDraw/Makefile.am
+--- OpenCASCADE6.3.0-old/ros/adm/make/TKDraw/Makefile.am	2008-10-02 23:54:48.000000000 +0200
++++ OpenCASCADE6.3.0/ros/adm/make/TKDraw/Makefile.am	2008-10-02 23:55:58.000000000 +0200
+@@ -33,7 +33,7 @@
+ ../TKGeomBase/libTKGeomBase.la \
+ ../TKHLR/libTKHLR.la \
+ ../TKGeomAlgo/libTKGeomAlgo.la \
+-$(STLPort_LIB) $(CSF_TclLibs_LIB) $(CSF_TclTkLibs_LIB) $(CSF_gdi32_LIB) $(CSF_advapi32_LIB) $(CSF_user32_LIB) 
++$(STLPort_LIB) $(CSF_TclLibs_LIB) $(CSF_TclTkLibs_LIB) $(CSF_XwLibs_LIB) $(CSF_gdi32_LIB) $(CSF_advapi32_LIB) $(CSF_user32_LIB) 
+ libTKDraw_la_LDFLAGS = -release 6.3.0
+ 
+ libTKDraw_la_SOURCES = \
+diff -uNr OpenCASCADE6.3.0-old/ros/adm/make/TKNIS/Makefile.am OpenCASCADE6.3.0/ros/adm/make/TKNIS/Makefile.am
+--- OpenCASCADE6.3.0-old/ros/adm/make/TKNIS/Makefile.am	2008-10-02 23:54:48.000000000 +0200
++++ OpenCASCADE6.3.0/ros/adm/make/TKNIS/Makefile.am	2008-10-02 23:55:58.000000000 +0200
+@@ -26,7 +26,7 @@
+ ../TKBRep/libTKBRep.la \
+ ../TKG3d/libTKG3d.la \
+ ../TKV3d/libTKV3d.la \
+-$(STLPort_LIB) 
++$(STLPort_LIB) $(CSF_OpenGlLibs_LIB)
+ libTKNIS_la_LDFLAGS = -release 6.3.0
+ 
+ libTKNIS_la_SOURCES = \
+diff -uNr OpenCASCADE6.3.0-old/ros/adm/make/TKService/Makefile.am OpenCASCADE6.3.0/ros/adm/make/TKService/Makefile.am
+--- OpenCASCADE6.3.0-old/ros/adm/make/TKService/Makefile.am	2008-10-02 23:54:49.000000000 +0200
++++ OpenCASCADE6.3.0/ros/adm/make/TKService/Makefile.am	2008-10-02 23:55:58.000000000 +0200
+@@ -45,7 +45,7 @@
+ libTKService_la_LIBADD = \
+ ../TKernel/libTKernel.la \
+ ../TKMath/libTKMath.la \
+-$(STLPort_LIB) $(CSF_XwLibs_LIB) $(CSF_dpsLibs_LIB) $(CSF_XmuLibs_LIB) 
++$(STLPort_LIB) $(CSF_XwLibs_LIB) $(CSF_dpsLibs_LIB) $(CSF_XmuLibs_LIB) -lXext
+ libTKService_la_LDFLAGS = -release 6.3.0
+ 
+ libTKService_la_SOURCES = \
+diff -uNr OpenCASCADE6.3.0-old/ros/adm/make/TKViewerTest/Makefile.am OpenCASCADE6.3.0/ros/adm/make/TKViewerTest/Makefile.am
+--- OpenCASCADE6.3.0-old/ros/adm/make/TKViewerTest/Makefile.am	2008-10-02 23:54:48.000000000 +0200
++++ OpenCASCADE6.3.0/ros/adm/make/TKViewerTest/Makefile.am	2008-10-02 23:55:58.000000000 +0200
+@@ -40,7 +40,7 @@
+ ../TKHLR/libTKHLR.la \
+ ../TKDraw/libTKDraw.la \
+ ../TKNIS/libTKNIS.la \
+-$(STLPort_LIB) $(CSF_TclLibs_LIB) $(CSF_TclTkLibs_LIB) $(CSF_user32_LIB) $(CSF_gdi32_LIB) 
++$(STLPort_LIB) $(CSF_TclLibs_LIB) $(CSF_TclTkLibs_LIB) $(CSF_XwLibs_LIB) $(CSF_user32_LIB) $(CSF_gdi32_LIB)
+ libTKViewerTest_la_LDFLAGS = -release 6.3.0
+ 
+ libTKViewerTest_la_SOURCES = \
