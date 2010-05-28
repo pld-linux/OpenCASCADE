@@ -48,11 +48,7 @@ BuildRequires:   compat
 %else
 BuildRequires:   compat-32bit
 %endif
-%if %suse_version >= 1100
 BuildRequires:   java-1_5_0-gcj-compat-devel
-%else
-BuildRequires:   java-1_4_2-gcj-compat-devel
-%endif
 Requires:        tcsh
 BuildRoot:       %{_tmppath}/%{name}-%{version}-build
 
@@ -63,7 +59,6 @@ development of numerical simulation software including CAD/CAM/CAE, AEC and
 GIS, as well as PDM applications.
 
 %package devel
-
 Group:          Development/Libraries/C and C++
 Summary:        Devel package for %{name}
 Requires:       %{name} = %{version}
@@ -76,7 +71,6 @@ GIS, as well as PDM applications.
 
 %prep
 %setup -q -n %{name}%{version}
-# all patches must applied in that order or some of them could fail
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -124,9 +118,10 @@ LDFLAGS=-lpthread %configure \
    --enable-wrappers \
    --enable-draw
 
-%__make %{?jobs:-j%{jobs}}
+%{__make}
 
 %install
+rm -rf $RPM_BUILD_ROOT
 cd ros
 %makeinstall
 
@@ -144,9 +139,9 @@ chmod -x %{buildroot}%{_prefix}/src/DrawResources/TestDraw.cxx
 chmod -x %{buildroot}%{_prefix}/src/DrawResources/DIFF.c
 
 cd ..
-mv data %{buildroot}%{_prefix}/
-mv doc %{buildroot}%{_prefix}/
-mv samples %{buildroot}%{_prefix}/
+cp -a data %{buildroot}%{_prefix}/
+cp -a doc %{buildroot}%{_prefix}/
+cp -a samples %{buildroot}%{_prefix}/
 find %{buildroot}%{_prefix}/data -type f -print0 |xargs -0 chmod a-x
 find %{buildroot}%{_prefix}/doc -type f -print0 |xargs -0 chmod a-x
 find %{buildroot}%{_prefix}/samples -type f -print0 |xargs -0 chmod a-x
@@ -156,7 +151,7 @@ find %{buildroot}%{_prefix}/samples -type f -print0 |xargs -0 chmod a-x
 %__ln_s %{_libdir} %{buildroot}/%{_prefix}/lin/lib
 %endif
 
-# add synlinks for compatibility resons
+# add symlinks for compatibility resons
 %__mkdir -p %{buildroot}/usr/share/opencascade/
 %__mkdir -p %{buildroot}/usr/include/
 %__mkdir -p %{buildroot}/usr/share/doc/packages/
@@ -170,18 +165,14 @@ find %{buildroot}%{_prefix}/samples -type f -print0 |xargs -0 chmod a-x
 %__mkdir -p %buildroot/etc/ld.so.conf.d/
 %__cp %SOURCE1 %buildroot/etc/ld.so.conf.d/
 
-%fdupes -s %{buildroot}
-
-
-%post -p /sbin/ldconfig
-
+%post   -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
 %clean
-rm -rf %buildroot
+rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root)
+%defattr(644,root,root,755)
 %dir %{_prefix}
 %dir %{_bindir}
 %dir %{_prefix}/lin
@@ -218,7 +209,7 @@ rm -rf %buildroot
 %{_prefix}/src/UnitsAPI/*.dat
 
 %files devel
-%defattr(-,root,root)
+%defattr(644,root,root,755)
 %dir /usr/include/opencascade/
 %{_libdir}/*.la
 %{_libdir}/opencas/*.la
