@@ -8,8 +8,6 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-%define _prefix /opt/OpenCASCADE
-
 Summary:	OpenCASCADE CAE platform
 Name:		OpenCASCADE
 Group:           Productivity/Other
@@ -30,7 +28,7 @@ Patch4:          OpenCASCADE6.3.0-lib-release.patch
 Patch5:          OpenCASCADE6.3.0-tkernel-ld.patch
 Patch6:          OpenCASCADE6.3.0-mft-disable-mmap.patch
 Patch7:          OpenCASCADE6.3.0-no-bitmaps-icon.patch
-Patch8:          OpenCASCADE6.3.0-DESTDIR.patch
+Patch8:		%{name}6.3.0-DESTDIR.patch
 Patch9:          OpenCASCADE6.3.0-maint-mode.patch
 Patch10:         OpenCASCADE6.3.0-dep-libs.patch
 Patch11:         OpenCASCADE6.3.0-move-vrml-vis.patch
@@ -40,15 +38,21 @@ Patch14:         OpenCASCADE6.3.0-wok-install.patch
 Patch15:         OpenCASCADE6.3.0-udlist.patch
 Patch16:         OpenCASCADE6.3.0-WOKUnix_FDescr.patch
 URL:		http://www.opencascade.org/
-
-BuildRequires:   Mesa-devel autoconf automake bison gcc-c++ xorg-x11-devel
-BuildRequires:   flex libtool tcl-devel tk-devel xorg-x11-libXmu-devel fdupes
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libstdc++-devel
+BuildRequires:	libtool
+BuildRequires:	Mesa-libGLU-devel
+BuildRequires:  bison flex tcl-devel tk-devel
 %ifarch i586
 BuildRequires:   compat
 %else
 BuildRequires:   compat-32bit
 %endif
 BuildRequires:   java-1_5_0-gcj-compat-devel
+BuildRequires:	xorg-lib-libX11-devel
+BuildRequires:	xorg-lib-libXmu-devel
+BuildRequires:	xorg-proto-xproto-devel
 Requires:        tcsh
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -128,8 +132,10 @@ LDFLAGS=-lpthread %configure \
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
 cd ros
-%makeinstall
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
 
 cd ..
 cp -a data %{buildroot}%{_prefix}/
