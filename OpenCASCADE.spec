@@ -10,8 +10,8 @@
 
 %define _prefix /opt/OpenCASCADE
 
-Name:		OpenCASCADE
 Summary:	OpenCASCADE CAE platform
+Name:		OpenCASCADE
 Group:           Productivity/Other
 # The 6.3.1 is a maintenance release, only available for OCC customers
 Version:	6.3.0
@@ -22,8 +22,8 @@ Source0:	http://files.opencascade.com/OCC_6.3_release/%{name}_src.tgz
 # Source0-md5:	52778127974cb3141c2827f9d40d1f11
 Source1:	 %name.conf
 Source2:	 OpenCASCADE-rpmlintrc
-Patch0:          OpenCASCADE6.3.0-obs-check.patch
-Patch1:          OpenCASCADE6.3.0-strcmp.patch
+Patch0:		%{name}6.3.0-obs-check.patch
+Patch1:		%{name}6.3.0-strcmp.patch
 Patch2:          OpenCASCADE6.3.0-occ6.3.0.patch
 Patch3:          OpenCASCADE6.3.0-casroot.patch
 Patch4:          OpenCASCADE6.3.0-lib-release.patch
@@ -50,7 +50,7 @@ BuildRequires:   compat-32bit
 %endif
 BuildRequires:   java-1_5_0-gcj-compat-devel
 Requires:        tcsh
-BuildRoot:       %{_tmppath}/%{name}-%{version}-build
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 OpenCASCADE is a suite for 3D surface and solid modeling, visualization, data
@@ -90,6 +90,13 @@ GIS, as well as PDM applications.
 %patch16 -p1
 
 %build
+cd ros
+%{__libtoolize}
+%{__aclocal} -I m4
+%{__autoconf}
+%{__autoheader}
+%{__automake}
+
 cd ros/src/ExprIntrp
 bison -d -p ExprIntrp -o ExprIntrp.tab.c ExprIntrp.yacc
 flex -L -8 -Cf -Cr -P ExprIntrp -o lex.ExprIntrp.c ExprIntrp.lex
@@ -103,7 +110,6 @@ export CXXFLAGS="$RPM_OPT_FLAGS -D_OCC64 -fno-strict-aliasing"
 export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 export CXXFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 %endif
-autoreconf -f -i
 LDFLAGS=-lpthread %configure \
    --with-gl-include=/usr/include \
    --with-gl-library=/usr/%{_lib} \
@@ -125,26 +131,10 @@ rm -rf $RPM_BUILD_ROOT
 cd ros
 %makeinstall
 
-`for i in $(find %{buildroot}%{_prefix}/inc/ -name '*.h'); do chmod -x $i; done`
-`for i in $(find %{buildroot}%{_prefix}/inc/ -name '*.hxx'); do chmod -x $i; done`
-`for i in $(find %{buildroot}%{_prefix}/inc/ -name '*.lxx'); do chmod -x $i; done`
-`for i in $(find %{buildroot}%{_prefix}/inc/ -name '*.gxx'); do chmod -x $i; done`
-
-chmod -x %{buildroot}%{_prefix}/wok/lib/config.h
-chmod -x %{buildroot}%{_libdir}/*.la
-chmod -x %{buildroot}%{_libdir}/opencas/*.la
-chmod -x %{buildroot}%{_prefix}/src/UnitsAPI/UnitsAPI.cxx
-chmod -x %{buildroot}%{_prefix}/src/DrawResources/Filtre.c
-chmod -x %{buildroot}%{_prefix}/src/DrawResources/TestDraw.cxx
-chmod -x %{buildroot}%{_prefix}/src/DrawResources/DIFF.c
-
 cd ..
 cp -a data %{buildroot}%{_prefix}/
 cp -a doc %{buildroot}%{_prefix}/
 cp -a samples %{buildroot}%{_prefix}/
-find %{buildroot}%{_prefix}/data -type f -print0 |xargs -0 chmod a-x
-find %{buildroot}%{_prefix}/doc -type f -print0 |xargs -0 chmod a-x
-find %{buildroot}%{_prefix}/samples -type f -print0 |xargs -0 chmod a-x
 
 %ifarch x86_64
 %__ln_s %{_libdir} %{buildroot}/%{_prefix}/Linux/lib
