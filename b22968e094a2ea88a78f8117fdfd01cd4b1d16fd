@@ -1,0 +1,3 @@
+- use %java_home, bison/flex magic in %prep, s/$RPM_OPT_FLAGS/%rpmcflags,
+- separated libs, doc, examples (see dx.spec), adjusted Groups,
+- cleanup: not used rpmlintrc, tcl-devel, compat?, tcsh, symlinks from /opt
