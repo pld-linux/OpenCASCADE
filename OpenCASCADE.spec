@@ -17,12 +17,10 @@ License:	LGPL-like, see http://www.opencascade.org/occ/license/
 Group:		Applications/Engineering
 Source0:	http://files.opencascade.com/OCC_6.3_release/%{name}_src.tgz
 # Source0-md5:	52778127974cb3141c2827f9d40d1f11
-Source1:	 %name.conf
 Patch0:		%{name}6.3.0-obs-check.patch
 Patch1:		%{name}6.3.0-strcmp.patch
 Patch2:          OpenCASCADE6.3.0-occ6.3.0.patch
 Patch3:          OpenCASCADE6.3.0-casroot.patch
-Patch4:          OpenCASCADE6.3.0-lib-release.patch
 Patch5:          OpenCASCADE6.3.0-tkernel-ld.patch
 Patch6:          OpenCASCADE6.3.0-mft-disable-mmap.patch
 Patch7:          OpenCASCADE6.3.0-no-bitmaps-icon.patch
@@ -30,8 +28,6 @@ Patch8:		%{name}6.3.0-DESTDIR.patch
 Patch9:          OpenCASCADE6.3.0-maint-mode.patch
 Patch10:         OpenCASCADE6.3.0-dep-libs.patch
 Patch11:         OpenCASCADE6.3.0-move-vrml-vis.patch
-Patch12:         OpenCASCADE6.3.0-make-wok-libs-private.patch
-Patch13:         OpenCASCADE6.3.0-make-draw-libs-private.patch
 Patch14:         OpenCASCADE6.3.0-wok-install.patch
 Patch15:         OpenCASCADE6.3.0-udlist.patch
 Patch16:         OpenCASCADE6.3.0-WOKUnix_FDescr.patch
@@ -91,7 +87,6 @@ OpenCASCADE examples.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
@@ -99,8 +94,6 @@ OpenCASCADE examples.
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
-%patch12 -p1
-%patch13 -p1
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1

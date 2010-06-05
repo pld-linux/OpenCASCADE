@@ -13,7 +13,7 @@ diff -uNr OpenCASCADE6.3.0-old/ros/src/Aspect/Aspect_Driver.cxx OpenCASCADE6.3.0
 -      cout << " CASROOT or CSF_MDTVFontDirectory  are mandatory to use this fonctionnality " << endl;
 -      Standard_Failure::Raise ( "CSF_MDTVTexturesDirectory and CASROOT not setted " );
 +    if ( !casroot ) {
-+      casroot = "/usr/share/opencascade/6.3.0";
++      casroot = "/usr/share/OpenCASCADE";
      }
 +    TCollection_AsciiString CasRootString (casroot);
 +    CasRootString += "/src/FontMFT" ; 
@@ -33,7 +33,7 @@ diff -uNr OpenCASCADE6.3.0-old/ros/src/DPrsStd/DPrsStd.cxx OpenCASCADE6.3.0/ros/
 -      PluginName+="/src/StdResource" ;
 -      hasPlugin = Standard_True ;
 +    if ( !casroot ) {
-+      casroot = "/usr/share/opencascade/6.3.0";
++      casroot = "/usr/share/OpenCASCADE";
      }
 +    PluginName = TCollection_AsciiString (casroot);
 +    PluginName+="/src/StdResource" ;
@@ -50,7 +50,7 @@ diff -uNr OpenCASCADE6.3.0-old/ros/src/Draw/Draw.cxx OpenCASCADE6.3.0/ros/src/Dr
  #else
 -	cout << " the CASROOT variable is mandatory to Run OpenCascade "<<endl;
 -	cout << "No default file" << endl;
-+	ReadInitFile("/usr/share/opencascade/6.3.0/src/DrawResources/DrawDefault");
++	ReadInitFile("/usr/share/OpenCASCADE/src/DrawResources/DrawDefault");
  #endif
        } else {
       
@@ -68,7 +68,7 @@ diff -uNr OpenCASCADE6.3.0-old/ros/src/Draw/Draw_PloadCommands.cxx OpenCASCADE6.
 -      aResult = aDirFound = Standard_False;
 -      cout << FAILSTR "Neither " << aCSFVariable.ToCString() << ", nor CASROOT variables have been set" << endl;
 +    if ( aPluginDir.IsEmpty() ) {
-+      aPluginDir = "/usr/share/opencascade/6.3.0";
++      aPluginDir = "/usr/share/OpenCASCADE";
      }
 +    aPluginDir +="/src/DrawResources" ;
 +    aToSetCSFVariable = Standard_True; //CSF variable to be set later
@@ -87,7 +87,7 @@ diff -uNr OpenCASCADE6.3.0-old/ros/src/DrawResources/DrawDefault OpenCASCADE6.3.
 -    } else {
 -  puts " CASROOT is Mandatory to Run OpenCascade"
 +    if { ![info exists env(CASROOT) ] } {
-+      set env(CASROOT) "/usr/share/opencascade/6.3.0"
++      set env(CASROOT) "/usr/share/OpenCASCADE"
      }
 +  set dir [file join $env(CASROOT) src DrawResources]
  }
@@ -123,7 +123,7 @@ diff -uNr OpenCASCADE6.3.0-old/ros/src/Graphic3d/Graphic3d_GraphicDevice.cxx Ope
 -    aShr = NULL;
 -    printf("You have not defined CSF_GraphicShr or CASROOT, aborting...");
 -    return Standard_False;
-+    glshr = "/usr/lib/libTKOpenGl-6.3.0.so";
++    glshr = "/usr/lib/libTKOpenGl.so";
    }
   
   aShr = glshr;
@@ -139,7 +139,7 @@ diff -uNr OpenCASCADE6.3.0-old/ros/src/Graphic3d/Graphic3d_Texture1D.cxx OpenCAS
 -	VarName += "/src/Textures" ;
 -	HasDefinition = Standard_True ;
 +      if ( !casroot ) {
-+	casroot = "/usr/share/opencascade/6.3.0";
++	casroot = "/usr/share/OpenCASCADE";
        }
 +      VarName = TCollection_AsciiString  (casroot);
 +      VarName += "/src/Textures" ;
@@ -159,7 +159,7 @@ diff -uNr OpenCASCADE6.3.0-old/ros/src/Graphic3d/Graphic3d_Texture2D.cxx OpenCAS
 -	VarName += "/src/Textures" ;
 -	HasDefinition = Standard_True ;
 +      if ( !casroot ) {
-+	casroot = "/usr/share/opencascade/6.3.0";
++	casroot = "/usr/share/OpenCASCADE";
        }
 +      VarName = TCollection_AsciiString  (casroot);
 +      VarName += "/src/Textures" ;
@@ -179,7 +179,7 @@ diff -uNr OpenCASCADE6.3.0-old/ros/src/Graphic3d/Graphic3d_TextureEnv.cxx OpenCA
 -	VarName += "/src/Textures" ;
 -	HasDefinition = Standard_True ;
 +      if ( !casroot ) {
-+	casroot = "/usr/share/opencascade/6.3.0";
++	casroot = "/usr/share/OpenCASCADE";
        }
 +      VarName = TCollection_AsciiString  (casroot);
 +      VarName += "/src/Textures" ;
@@ -201,7 +201,7 @@ diff -uNr OpenCASCADE6.3.0-old/ros/src/UnitsAPI/UnitsAPI.cxx OpenCASCADE6.3.0/ro
 -      else {
 -	Standard_NoSuchObject::Raise("environment variable CSF_UnitsLexicon undefined");
 +      if (CasRootString.Length() == 0 )  {
-+        CasRootString = "/usr/share/opencascade/6.3.0";
++        CasRootString = "/usr/share/OpenCASCADE";
        }
 +      CasRootString += "/src/UnitsAPI/Lexi_Expr.dat" ;
 +      Units::LexiconFile(CasRootString.ToCString());
@@ -219,7 +219,7 @@ diff -uNr OpenCASCADE6.3.0-old/ros/src/UnitsAPI/UnitsAPI.cxx OpenCASCADE6.3.0/ro
 -      else {
 -	Standard_NoSuchObject::Raise("environment variable CSF_UnitsDefinition undefined");
 +      if (CasRootString.Length() == 0 ) {
-+        CasRootString = "/usr/share/opencascade/6.3.0";
++        CasRootString = "/usr/share/OpenCASCADE";
        }
 +      CasRootString += "/src/UnitsAPI/Units.dat";
 +      Units::UnitsFile(CasRootString.ToCString());
@@ -238,7 +238,7 @@ diff -uNr OpenCASCADE6.3.0-old/ros/src/ViewerTest/ViewerTest.cxx OpenCASCADE6.3.
 -	VarName += "/src/Textures" ;
 -	HasDefinition = Standard_True ;
 +      if ( !casroot ) {
-+	casroot = "/usr/share/opencascade/6.3.0";
++	casroot = "/usr/share/OpenCASCADE";
        }
 +      VarName = TCollection_AsciiString  (casroot);
 +      VarName += "/src/Textures" ;
@@ -257,7 +257,7 @@ diff -uNr OpenCASCADE6.3.0-old/ros/src/XmlLDrivers/XmlLDrivers_DocumentStorageDr
 -      aResourceDir += "/src/XmlOcafResource" ;
 -      aToSetCSFVariable = Standard_True; //CSF variable to be set later
 +    if ( aResourceDir.IsEmpty() ) {
-+      aResourceDir = "/usr/share/opencascade/6.3.0";
++      aResourceDir = "/usr/share/OpenCASCADE";
      }
 -#ifdef DEB
 -    else {
