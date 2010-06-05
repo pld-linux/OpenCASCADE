@@ -20,7 +20,7 @@ Source0:	http://files.opencascade.com/OCC_6.3_release/%{name}_src.tgz
 Patch0:		%{name}6.3.0-obs-check.patch
 Patch1:		%{name}6.3.0-strcmp.patch
 Patch2:          OpenCASCADE6.3.0-occ6.3.0.patch
-Patch3:          OpenCASCADE6.3.0-casroot.patch
+Patch3:		%{name}6.3.0-casroot.patch
 Patch5:          OpenCASCADE6.3.0-tkernel-ld.patch
 Patch6:          OpenCASCADE6.3.0-mft-disable-mmap.patch
 Patch7:          OpenCASCADE6.3.0-no-bitmaps-icon.patch
@@ -74,13 +74,6 @@ Group:		Documentation
 %description doc
 OpenCASCADE help and html documentation.
 
-%package examples
-Summary:	OpenCASCADE examples
-Group:		Documentation
-
-%description examples
-OpenCASCADE examples.
-
 %prep
 %setup -q -n %{name}%{version}
 %patch0 -p1
@@ -131,7 +124,7 @@ LDFLAGS=-lpthread %configure \
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_includedir}
+install -d $RPM_BUILD_ROOT{%{_datadir},%{_includedir}}
 
 cd ros
 %{__make} install \
@@ -142,6 +135,7 @@ cp -a data $RPM_BUILD_ROOT%{_datadir}/%{name}
 cp -a doc %{buildroot}%{_prefix}/
 cp -a samples %{buildroot}%{_prefix}/
 
+mv $RPM_BUILD_ROOT{%{_prefix}/src,%{_datadir}/%{name}}
 mv $RPM_BUILD_ROOT{%{_prefix}/inc,%{_includedir}/%{name}}
 rm -r $RPM_BUILD_ROOT%{_prefix}/{Linux,lin}
 
@@ -155,6 +149,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/DRAWEXE
 %attr(755,root,root) %{_bindir}/wok*
+%{_datadir}/%{name}
 
 %files libs
 %defattr(644,root,root,755)
@@ -166,19 +161,13 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_prefix}/wok/site/
 %dir %{_prefix}/data
 %dir %{_prefix}/doc
-%dir %{_libdir}/
-%dir %{_libdir}/opencas/
-%dir /usr/share/opencascade/
 %{_prefix}/data/*
 %{_prefix}/doc/*
 %{_prefix}/wok/lib/*
 %{_prefix}/wok/site/*
 %{_prefix}/config.h
 %{_prefix}/env_DRAW.sh
-%{_libdir}/opencas/*.so
-/usr/share/opencascade/%{version}
 /usr/share/doc/packages/opencascade
-%config /etc/ld.so.conf.d/%name.conf
 %dir %{_prefix}/src/UnitsAPI
 %dir %{_prefix}/src
 %{_prefix}/src/UnitsAPI/*.dat
@@ -189,11 +178,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.la
 %attr(755,root,root) %{_libdir}/*.so
 
-%{_libdir}/opencas/*.la
 %dir %{_prefix}/src/
 %{_prefix}/src/*
-%dir %{_prefix}/inc/
-%{_prefix}/inc/*
 %dir %{_prefix}/samples
 %{_prefix}/samples/*
 %exclude %{_prefix}/src/UnitsAPI/*.dat
