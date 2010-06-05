@@ -99,7 +99,7 @@ cp ExprIntrp.tab.c lex.ExprIntrp.c ../../drv/ExprIntrp/
 %build
 cd ros
 %{__libtoolize}
-%{__aclocal} -I m4
+%{__aclocal}
 %{__autoconf}
 %{__autoheader}
 %{__automake}
@@ -112,12 +112,7 @@ export CFLAGS="%{rpmcflags} -fno-strict-aliasing"
 export CXXFLAGS="%{rpmcflags} -fno-strict-aliasing"
 %endif
 LDFLAGS=-lpthread %configure \
-   --disable-static \
-   --disable-debug \
-   --enable-production \
-   --enable-draw \
-   --enable-wok \
-   --enable-wrappers \
+	%{!?debug:--disable-debug --enable-production} \
 	--with-java-include="%{java_home}"/include
 
 %{__make}
