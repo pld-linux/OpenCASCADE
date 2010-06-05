@@ -138,6 +138,7 @@ LDFLAGS=-lpthread %configure \
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT%{_includedir}
 
 cd ros
 %{__make} install \
@@ -148,6 +149,9 @@ cp -a data $RPM_BUILD_ROOT%{_datadir}/%{name}
 cp -a doc %{buildroot}%{_prefix}/
 cp -a samples %{buildroot}%{_prefix}/
 
+mv $RPM_BUILD_ROOT{%{_prefix}/inc,%{_includedir}/%{name}}
+rm -r $RPM_BUILD_ROOT%{_prefix}/{Linux,lin}
+
 %post   -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
@@ -156,10 +160,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%dir %{_prefix}
-%dir %{_bindir}
-%dir %{_prefix}/lin
-%dir %{_prefix}/Linux
+%attr(755,root,root) %{_bindir}/DRAWEXE
+%attr(755,root,root) %{_bindir}/wok*
+
+%files libs
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/*.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/*.so.0
+
 %dir %{_prefix}/wok
 %dir %{_prefix}/wok/lib/
 %dir %{_prefix}/wok/site/
@@ -168,22 +176,13 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/
 %dir %{_libdir}/opencas/
 %dir /usr/share/opencascade/
-%{_bindir}/DRAWEXE
-%{_bindir}/wokprocess
-%{_bindir}/woksh
-%{_prefix}/lin/bin
-%{_prefix}/lin/lib
-%{_prefix}/Linux/bin
-%{_prefix}/Linux/lib
 %{_prefix}/data/*
 %{_prefix}/doc/*
 %{_prefix}/wok/lib/*
 %{_prefix}/wok/site/*
 %{_prefix}/config.h
 %{_prefix}/env_DRAW.sh
-%{_libdir}/*.so
 %{_libdir}/opencas/*.so
-/usr/%_lib/*
 /usr/share/opencascade/%{version}
 /usr/share/doc/packages/opencascade
 %config /etc/ld.so.conf.d/%name.conf
@@ -193,8 +192,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%dir /usr/include/opencascade/
+%{_includedir}/%{name}
 %{_libdir}/*.la
+%attr(755,root,root) %{_libdir}/*.so
+
 %{_libdir}/opencas/*.la
 %dir %{_prefix}/src/
 %{_prefix}/src/*
