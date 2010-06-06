@@ -74,6 +74,13 @@ Group:		Documentation
 %description doc
 OpenCASCADE help and html documentation.
 
+%package samples
+Summary:	OpenCASCADE samples
+Group:		Documentation
+
+%description samples
+OpenCASCADE samples.
+
 %prep
 %setup -q -n %{name}%{version}
 %patch0 -p1
@@ -120,7 +127,7 @@ LDFLAGS=-lpthread %configure \
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_datadir},%{_includedir}}
+install -d $RPM_BUILD_ROOT{%{_datadir},%{_includedir},%{_usrsrc}}
 
 cd ros
 %{__make} install \
@@ -128,14 +135,16 @@ cd ros
 cd ..
 
 cp -a data $RPM_BUILD_ROOT%{_datadir}/%{name}
-mkdir -p doc-i
-[ -d doc ] && mv doc doc-i/%{name}-%{version}
-ln -s %{_builddir}/%{name}%{version}/doc-i $RPM_BUILD_ROOT%{_defaultdocdir}
-cp -a samples %{buildroot}%{_prefix}/
-
 mv $RPM_BUILD_ROOT{%{_prefix}/src,%{_datadir}/%{name}}
 mv $RPM_BUILD_ROOT{%{_prefix}/inc,%{_includedir}/%{name}}
 rm -r $RPM_BUILD_ROOT%{_prefix}/{Linux,lin}
+
+for i in doc samples; do
+mkdir -p $i-i
+[ -d $i ] && mv $i $i-i/%{name}-%{version} || :
+done
+ln -s %{_builddir}/%{name}%{version}/doc-i   $RPM_BUILD_ROOT%{_defaultdocdir}
+ln -s %{_builddir}/%{name}%{version}/samples-i $RPM_BUILD_ROOT%{_examplesdir}
 
 %post   -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -158,9 +167,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_prefix}/wok/lib/
 %dir %{_prefix}/wok/site/
 %dir %{_prefix}/data
-%dir %{_prefix}/doc
 %{_prefix}/data/*
-%{_prefix}/doc/*
 %{_prefix}/wok/lib/*
 %{_prefix}/wok/site/*
 %{_prefix}/config.h
@@ -175,11 +182,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.la
 %attr(755,root,root) %{_libdir}/*.so
 
+%dir %{_prefix}/src/
+%{_prefix}/src/*
+%exclude %{_prefix}/src/UnitsAPI/*.dat
+
 %files doc
 %{_docdir}/%{name}-%{version}
 
-%dir %{_prefix}/src/
-%{_prefix}/src/*
-%dir %{_prefix}/samples
-%{_prefix}/samples/*
-%exclude %{_prefix}/src/UnitsAPI/*.dat
+%files samples
+%{_examplesdir}/%{name}-%{version}
