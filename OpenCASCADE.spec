@@ -112,7 +112,8 @@ export CFLAGS="%{rpmcflags} -fno-strict-aliasing"
 export CXXFLAGS="%{rpmcflags} -fno-strict-aliasing"
 %endif
 LDFLAGS=-lpthread %configure \
-	%{!?debug:--disable-debug --enable-production} \
+	%{?debug:--disable-production  --enable-debug} \
+	%{!?debug:--enable-production --disable-debug} \
 	--with-java-include="%{java_home}"/include
 
 %{__make}
@@ -127,7 +128,9 @@ cd ros
 cd ..
 
 cp -a data $RPM_BUILD_ROOT%{_datadir}/%{name}
-cp -a doc %{buildroot}%{_prefix}/
+mkdir -p doc-i
+[ -d doc ] && mv doc doc-i/%{name}-%{version}
+ln -s %{_builddir}/%{name}%{version}/doc-i $RPM_BUILD_ROOT%{_defaultdocdir}
 cp -a samples %{buildroot}%{_prefix}/
 
 mv $RPM_BUILD_ROOT{%{_prefix}/src,%{_datadir}/%{name}}
@@ -162,7 +165,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/wok/site/*
 %{_prefix}/config.h
 %{_prefix}/env_DRAW.sh
-/usr/share/doc/packages/opencascade
 %dir %{_prefix}/src/UnitsAPI
 %dir %{_prefix}/src
 %{_prefix}/src/UnitsAPI/*.dat
@@ -172,6 +174,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/%{name}
 %{_libdir}/*.la
 %attr(755,root,root) %{_libdir}/*.so
+
+%files doc
+%{_docdir}/%{name}-%{version}
 
 %dir %{_prefix}/src/
 %{_prefix}/src/*
