@@ -127,7 +127,7 @@ LDFLAGS=-lpthread %configure \
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_datadir},%{_includedir},%{_usrsrc}}
+install -d $RPM_BUILD_ROOT{%{_datadir}/%{name},%{_includedir}}
 
 cd ros
 %{__make} install \
@@ -139,6 +139,7 @@ mv $RPM_BUILD_ROOT{%{_prefix}/src,%{_datadir}/%{name}}
 mv $RPM_BUILD_ROOT{%{_prefix}/inc,%{_includedir}/%{name}}
 rm -r $RPM_BUILD_ROOT%{_prefix}/{Linux,lin}
 
+mkdir -p $RPM_BUILD_ROOT/usr/src
 for i in doc samples; do
 mkdir -p $i-i
 [ -d $i ] && mv $i $i-i/%{name}-%{version} || :
@@ -154,40 +155,42 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
+%doc ros/README.txt
 %attr(755,root,root) %{_bindir}/DRAWEXE
 %attr(755,root,root) %{_bindir}/wok*
-%{_datadir}/%{name}
+%dir %{_datadir}/%{name}
+%{_datadir}/%{name}/data
+%dir %{_datadir}/%{name}/src
+%dir %{_datadir}/%{name}/src/UnitsAPI
+%{_datadir}/%{name}/src/UnitsAPI/*.dat
 
 %files libs
 %defattr(644,root,root,755)
+%doc LICENSE
 %attr(755,root,root) %{_libdir}/*.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/*.so.0
 
 %dir %{_prefix}/wok
 %dir %{_prefix}/wok/lib/
 %dir %{_prefix}/wok/site/
-%dir %{_prefix}/data
 %{_prefix}/data/*
 %{_prefix}/wok/lib/*
 %{_prefix}/wok/site/*
 %{_prefix}/config.h
 %{_prefix}/env_DRAW.sh
-%dir %{_prefix}/src/UnitsAPI
-%dir %{_prefix}/src
-%{_prefix}/src/UnitsAPI/*.dat
 
 %files devel
 %defattr(644,root,root,755)
 %{_includedir}/%{name}
 %{_libdir}/*.la
 %attr(755,root,root) %{_libdir}/*.so
-
-%dir %{_prefix}/src/
-%{_prefix}/src/*
-%exclude %{_prefix}/src/UnitsAPI/*.dat
+%{_datadir}/%{name}/src/*
+%exclude %{_datadir}/%{name}/src/UnitsAPI/*.dat
 
 %files doc
+%defattr(644,root,root,755)
 %{_docdir}/%{name}-%{version}
 
 %files samples
+%defattr(644,root,root,755)
 %{_examplesdir}/%{name}-%{version}
