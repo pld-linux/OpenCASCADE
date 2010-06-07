@@ -8,6 +8,8 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
+# TODO: separate libs-x (80% of libraries)
+
 Summary:	OpenCASCADE CAE platform
 Name:		OpenCASCADE
 # The 6.3.1 is a maintenance release, only available for OCC customers
@@ -28,6 +30,8 @@ Patch8:		%{name}6.3.0-DESTDIR.patch
 Patch9:          OpenCASCADE6.3.0-maint-mode.patch
 Patch10:         OpenCASCADE6.3.0-dep-libs.patch
 Patch11:         OpenCASCADE6.3.0-move-vrml-vis.patch
+Patch12:	%{name}6.3.0-make-wok-libs-private.patch
+Patch13:	%{name}6.3.0-make-draw-libs-private.patch
 Patch14:         OpenCASCADE6.3.0-wok-install.patch
 Patch15:         OpenCASCADE6.3.0-udlist.patch
 Patch16:         OpenCASCADE6.3.0-WOKUnix_FDescr.patch
@@ -94,6 +98,8 @@ OpenCASCADE samples.
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
+%patch12 -p1
+%patch13 -p1
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
@@ -147,15 +153,14 @@ done
 ln -s %{_builddir}/%{name}%{version}/doc-i   $RPM_BUILD_ROOT%{_defaultdocdir}
 ln -s %{_builddir}/%{name}%{version}/samples-i $RPM_BUILD_ROOT%{_examplesdir}
 
-%post   -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%post   libs -p /sbin/ldconfig
+%postun libs -p /sbin/ldconfig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc ros/README.txt
 %attr(755,root,root) %{_bindir}/DRAWEXE
 %attr(755,root,root) %{_bindir}/wok*
 %dir %{_datadir}/%{name}
@@ -166,17 +171,22 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/%{name}/src/UnitsAPI
 %{_datadir}/%{name}/src/UnitsAPI/*.dat
 %{_datadir}/%{name}/wok
+%dir %{_libdir}/opencas
+%attr(755,root,root) %{_libdir}/opencas/*.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/opencas/*.so.0
 
 %files libs
 %defattr(644,root,root,755)
-%doc LICENSE
+%doc LICENSE ros/README.txt
 %attr(755,root,root) %{_libdir}/*.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/*.so.0
 
 %files devel
 %defattr(644,root,root,755)
 %{_includedir}/%{name}
+%{_libdir}/opencas/*.la
 %{_libdir}/*.la
+%attr(755,root,root) %{_libdir}/opencas/*.so
 %attr(755,root,root) %{_libdir}/*.so
 %{_datadir}/%{name}/src/*
 %exclude %{_datadir}/%{name}/src/UnitsAPI/*.dat

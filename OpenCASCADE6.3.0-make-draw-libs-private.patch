@@ -1,0 +1,92 @@
+diff -uNr OpenCASCADE6.3.0-old/ros/adm/make/DRAWEXE/Makefile.am OpenCASCADE6.3.0/ros/adm/make/DRAWEXE/Makefile.am
+--- OpenCASCADE6.3.0-old/ros/adm/make/DRAWEXE/Makefile.am	2008-10-02 23:57:07.000000000 +0200
++++ OpenCASCADE6.3.0/ros/adm/make/DRAWEXE/Makefile.am	2008-10-02 23:58:25.000000000 +0200
+@@ -23,3 +23,4 @@
+ ../TKG3d/libTKG3d.la \
+ ../TKernel/libTKernel.la \
+  $(STLPort_LIB) $(CSF_TclLibs_LIB) $(CSF_TclTkLibs_LIB) $(CSF_gdi32_LIB) $(CSF_advapi32_LIB) $(CSF_user32_LIB) $(CSF_SOCKETLibs_LIB) $(CSF_FPELibs_LIB) $(CSF_ThreadLibs_LIB) $(CSF_kernel32_LIB)  
++ DRAWEXE_LDFLAGS = -rpath /usr/lib/opencas
+diff -uNr OpenCASCADE6.3.0-old/ros/adm/make/TKDCAF/Makefile.am OpenCASCADE6.3.0/ros/adm/make/TKDCAF/Makefile.am
+--- OpenCASCADE6.3.0-old/ros/adm/make/TKDCAF/Makefile.am	2008-10-02 23:57:07.000000000 +0200
++++ OpenCASCADE6.3.0/ros/adm/make/TKDCAF/Makefile.am	2008-10-02 23:58:25.000000000 +0200
+@@ -26,7 +26,7 @@
+ -I@top_srcdir@/drv/DrawDim -I@top_srcdir@/src/DrawDim
+ 
+ 
+-lib_LTLIBRARIES=libTKDCAF.la
++pkglib_LTLIBRARIES=libTKDCAF.la
+ 
+ libTKDCAF_la_LIBADD = \
+ ../TKernel/libTKernel.la \
+diff -uNr OpenCASCADE6.3.0-old/ros/adm/make/TKDraw/Makefile.am OpenCASCADE6.3.0/ros/adm/make/TKDraw/Makefile.am
+--- OpenCASCADE6.3.0-old/ros/adm/make/TKDraw/Makefile.am	2008-10-02 23:57:07.000000000 +0200
++++ OpenCASCADE6.3.0/ros/adm/make/TKDraw/Makefile.am	2008-10-02 23:58:25.000000000 +0200
+@@ -20,7 +20,7 @@
+ -I@top_srcdir@/drv/DrawTrSurf -I@top_srcdir@/src/DrawTrSurf
+ 
+ 
+-lib_LTLIBRARIES=libTKDraw.la
++pkglib_LTLIBRARIES=libTKDraw.la
+ 
+ libTKDraw_la_LIBADD = \
+ ../TKernel/libTKernel.la \
+diff -uNr OpenCASCADE6.3.0-old/ros/adm/make/TKTObjDRAW/Makefile.am OpenCASCADE6.3.0/ros/adm/make/TKTObjDRAW/Makefile.am
+--- OpenCASCADE6.3.0-old/ros/adm/make/TKTObjDRAW/Makefile.am	2008-10-02 23:57:07.000000000 +0200
++++ OpenCASCADE6.3.0/ros/adm/make/TKTObjDRAW/Makefile.am	2008-10-02 23:58:25.000000000 +0200
+@@ -16,7 +16,7 @@
+ -I@top_srcdir@/drv/TObjDRAW -I@top_srcdir@/src/TObjDRAW
+ 
+ 
+-lib_LTLIBRARIES=libTKTObjDRAW.la
++pkglib_LTLIBRARIES=libTKTObjDRAW.la
+ 
+ libTKTObjDRAW_la_LIBADD = \
+ ../TKTObj/libTKTObj.la \
+diff -uNr OpenCASCADE6.3.0-old/ros/adm/make/TKTopTest/Makefile.am OpenCASCADE6.3.0/ros/adm/make/TKTopTest/Makefile.am
+--- OpenCASCADE6.3.0-old/ros/adm/make/TKTopTest/Makefile.am	2008-10-02 23:57:07.000000000 +0200
++++ OpenCASCADE6.3.0/ros/adm/make/TKTopTest/Makefile.am	2008-10-02 23:58:25.000000000 +0200
+@@ -34,7 +34,7 @@
+ -I@top_srcdir@/drv/BOPTest -I@top_srcdir@/src/BOPTest
+ 
+ 
+-lib_LTLIBRARIES=libTKTopTest.la
++pkglib_LTLIBRARIES=libTKTopTest.la
+ 
+ libTKTopTest_la_LIBADD = \
+ ../TKernel/libTKernel.la \
+diff -uNr OpenCASCADE6.3.0-old/ros/adm/make/TKViewerTest/Makefile.am OpenCASCADE6.3.0/ros/adm/make/TKViewerTest/Makefile.am
+--- OpenCASCADE6.3.0-old/ros/adm/make/TKViewerTest/Makefile.am	2008-10-02 23:57:07.000000000 +0200
++++ OpenCASCADE6.3.0/ros/adm/make/TKViewerTest/Makefile.am	2008-10-02 23:58:25.000000000 +0200
+@@ -18,7 +18,7 @@
+ -I@top_srcdir@/drv/ViewerTest -I@top_srcdir@/src/ViewerTest
+ 
+ 
+-lib_LTLIBRARIES=libTKViewerTest.la
++pkglib_LTLIBRARIES=libTKViewerTest.la
+ 
+ libTKViewerTest_la_LIBADD = \
+ ../TKernel/libTKernel.la \
+diff -uNr OpenCASCADE6.3.0-old/ros/adm/make/TKXDEDRAW/Makefile.am OpenCASCADE6.3.0/ros/adm/make/TKXDEDRAW/Makefile.am
+--- OpenCASCADE6.3.0-old/ros/adm/make/TKXDEDRAW/Makefile.am	2008-10-02 23:57:08.000000000 +0200
++++ OpenCASCADE6.3.0/ros/adm/make/TKXDEDRAW/Makefile.am	2008-10-02 23:58:25.000000000 +0200
+@@ -16,7 +16,7 @@
+ -I@top_srcdir@/drv/XDEDRAW -I@top_srcdir@/src/XDEDRAW
+ 
+ 
+-lib_LTLIBRARIES=libTKXDEDRAW.la
++pkglib_LTLIBRARIES=libTKXDEDRAW.la
+ 
+ libTKXDEDRAW_la_LIBADD = \
+ ../TKernel/libTKernel.la \
+diff -uNr OpenCASCADE6.3.0-old/ros/adm/make/TKXSDRAW/Makefile.am OpenCASCADE6.3.0/ros/adm/make/TKXSDRAW/Makefile.am
+--- OpenCASCADE6.3.0-old/ros/adm/make/TKXSDRAW/Makefile.am	2008-10-02 23:57:08.000000000 +0200
++++ OpenCASCADE6.3.0/ros/adm/make/TKXSDRAW/Makefile.am	2008-10-02 23:58:25.000000000 +0200
+@@ -24,7 +24,7 @@
+ -I@top_srcdir@/drv/XSDRAWSTLVRML -I@top_srcdir@/src/XSDRAWSTLVRML
+ 
+ 
+-lib_LTLIBRARIES=libTKXSDRAW.la
++pkglib_LTLIBRARIES=libTKXSDRAW.la
+ 
+ libTKXSDRAW_la_LIBADD = \
+ ../TKernel/libTKernel.la \
