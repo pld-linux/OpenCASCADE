@@ -135,7 +135,7 @@ cd ros
 cd ..
 
 cp -a data $RPM_BUILD_ROOT%{_datadir}/%{name}
-mv $RPM_BUILD_ROOT{%{_prefix}/src,%{_datadir}/%{name}}
+mv $RPM_BUILD_ROOT{%{_prefix}/{src,wok,config.h,env_DRAW.sh},%{_datadir}/%{name}}
 mv $RPM_BUILD_ROOT{%{_prefix}/inc,%{_includedir}/%{name}}
 rm -r $RPM_BUILD_ROOT%{_prefix}/{Linux,lin}
 
@@ -159,25 +159,19 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/DRAWEXE
 %attr(755,root,root) %{_bindir}/wok*
 %dir %{_datadir}/%{name}
+%{_datadir}/%{name}/config.h
 %{_datadir}/%{name}/data
+%attr(755,root,root) %{_datadir}/%{name}/env_DRAW.sh
 %dir %{_datadir}/%{name}/src
 %dir %{_datadir}/%{name}/src/UnitsAPI
 %{_datadir}/%{name}/src/UnitsAPI/*.dat
+%{_datadir}/%{name}/wok
 
 %files libs
 %defattr(644,root,root,755)
 %doc LICENSE
 %attr(755,root,root) %{_libdir}/*.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/*.so.0
-
-%dir %{_prefix}/wok
-%dir %{_prefix}/wok/lib/
-%dir %{_prefix}/wok/site/
-%{_prefix}/data/*
-%{_prefix}/wok/lib/*
-%{_prefix}/wok/site/*
-%{_prefix}/config.h
-%{_prefix}/env_DRAW.sh
 
 %files devel
 %defattr(644,root,root,755)
