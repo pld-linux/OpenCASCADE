@@ -40,7 +40,9 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
+%ifnarch i486
 BuildRequires:	java-sun-jdk-base
+%endif
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	Mesa-libGLU-devel
