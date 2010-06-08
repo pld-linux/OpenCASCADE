@@ -21,20 +21,21 @@ Source0:	http://files.opencascade.com/OCC_6.3_release/%{name}_src.tgz
 # Source0-md5:	52778127974cb3141c2827f9d40d1f11
 Patch0:		%{name}6.3.0-obs-check.patch
 Patch1:		%{name}6.3.0-strcmp.patch
-Patch2:          OpenCASCADE6.3.0-occ6.3.0.patch
+Patch2:		%{name}6.3.0-occ6.3.0.patch
 Patch3:		%{name}6.3.0-casroot.patch
 Patch5:          OpenCASCADE6.3.0-tkernel-ld.patch
-Patch6:          OpenCASCADE6.3.0-mft-disable-mmap.patch
-Patch7:          OpenCASCADE6.3.0-no-bitmaps-icon.patch
+Patch6:		%{name}6.3.0-mft-disable-mmap.patch
+Patch7:		%{name}6.3.0-no-bitmaps-icon.patch
 Patch8:		%{name}6.3.0-DESTDIR.patch
 Patch9:          OpenCASCADE6.3.0-maint-mode.patch
 Patch10:         OpenCASCADE6.3.0-dep-libs.patch
-Patch11:         OpenCASCADE6.3.0-move-vrml-vis.patch
+Patch11:	%{name}6.3.0-move-vrml-vis.patch
 Patch12:	%{name}6.3.0-make-wok-libs-private.patch
 Patch13:	%{name}6.3.0-make-draw-libs-private.patch
 Patch14:         OpenCASCADE6.3.0-wok-install.patch
-Patch15:         OpenCASCADE6.3.0-udlist.patch
-Patch16:         OpenCASCADE6.3.0-WOKUnix_FDescr.patch
+Patch15:	%{name}6.3.0-udlist.patch
+Patch16:	%{name}6.3.0-WOKUnix_FDescr.patch
+Patch17:	fix-tklcaf.patch
 URL:		http://www.opencascade.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -105,6 +106,7 @@ OpenCASCADE samples.
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
+%patch17 -p1
 cd ros/src/ExprIntrp
 bison -d -p ExprIntrp -o ExprIntrp.tab.c ExprIntrp.yacc
 flex -L -8 -Cf -Cr -P ExprIntrp -o lex.ExprIntrp.c ExprIntrp.lex

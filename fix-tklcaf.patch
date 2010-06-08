@@ -1,0 +1,24 @@
+Fix TKLCAF library (= instead of == in if-condition)
+
+Submitted upstream: http://www.opencascade.org/org/forum/thread_18622/
+
+From: Michael Wild <themiwi@users.sourceforge.net>
+
+Signed-off-by: Michael Wild <themiwi@users.sourceforge.net>
+---
+ ros/src/TDataStd/TDataStd_Constraint.cxx |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/ros/src/TDataStd/TDataStd_Constraint.cxx b/ros/src/TDataStd/TDataStd_Constraint.cxx
+index c164aea..4966d39 100644
+--- a/ros/src/TDataStd/TDataStd_Constraint.cxx
++++ b/ros/src/TDataStd/TDataStd_Constraint.cxx
+@@ -213,7 +213,7 @@ const Handle(TNaming_NamedShape)&  TDataStd_Constraint::GetPlane() const
+ void TDataStd_Constraint::SetType (const TDataStd_ConstraintEnum CTR) 
+ {  
+   // OCC2932 correction
+-  if(myType = CTR) return;
++  if(myType == CTR) return;
+ 
+   Backup();
+   myType = CTR;
