@@ -9,10 +9,12 @@
 # published by the Open Source Initiative.
 
 # NOTE: there are some not PLD-relevant patches available:
-#	- MIPS: http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/fix-asm.patch
 #	- kFreeBSD/Hurd: http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/fix-osd_path.patch
+#	- MIPS: http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/fix-asm.patch
+#	- PPC: http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/ppc.patch
 
-# TODO: separate libs-x (80% of libraries)
+# TODO: - separate libs-x (80% of libraries)
+#	- consider arch-independent includes: http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/OCC64.patch
 
 Summary:	OpenCASCADE CAE platform
 Name:		OpenCASCADE
