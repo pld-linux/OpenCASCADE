@@ -8,6 +8,10 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
+# NOTE: there are some not PLD-relevant patches available:
+#	- MIPS: http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/fix-asm.patch
+#	- kFreeBSD/Hurd: http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/fix-osd_path.patch
+
 # TODO: separate libs-x (80% of libraries)
 
 Summary:	OpenCASCADE CAE platform
@@ -23,6 +27,7 @@ Patch0:		%{name}6.3.0-obs-check.patch
 Patch1:		%{name}6.3.0-strcmp.patch
 Patch2:		%{name}6.3.0-occ6.3.0.patch
 Patch3:		%{name}6.3.0-casroot.patch
+Patch4:		wokstep_extract.patch
 Patch5:          OpenCASCADE6.3.0-tkernel-ld.patch
 Patch6:		%{name}6.3.0-mft-disable-mmap.patch
 Patch7:		%{name}6.3.0-no-bitmaps-icon.patch
@@ -94,6 +99,7 @@ OpenCASCADE samples.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1

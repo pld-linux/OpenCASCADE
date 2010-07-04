@@ -1,0 +1,32 @@
+Fix WOKStep_Extract::Execute
+
+This step did put garbage into generated file, because a pointer was used
+after it has been freed.
+Closes: #501352
+
+diff --git a/ros/src/CPPExt/CPPExt.cxx b/ros/src/CPPExt/CPPExt.cxx
+index 4d96c47..a651607 100644
+--- a/ros/src/CPPExt/CPPExt.cxx
++++ b/ros/src/CPPExt/CPPExt.cxx
+@@ -397,7 +397,8 @@ void CPP_BuildMethod(const Handle(MS_MetaSchema)& aMeta,
+     const Handle(TCollection_HAsciiString)& aTypeName=retType->TypeName();
+     pTypeName=(char *)aTypeName->ToCString();
+     //
+-    pTypeRet=(char *)CPP_BuildType(aMeta,aTypeName)->ToCString();
++    const Handle(TCollection_HAsciiString)& aTypeRet=CPP_BuildType(aMeta,aTypeName);
++    pTypeRet=(char *)aTypeRet->ToCString();
+     //
+     //modified by NIZNHY-PKV Mon May  5 15:10:12 2008f
+     if (m->IsPtrReturn()) {
+diff --git a/ros/src/WOKUnix/WOKUnix_Process.cxx b/ros/src/WOKUnix/WOKUnix_Process.cxx
+index dd6caf6..fa649c7 100644
+--- a/ros/src/WOKUnix/WOKUnix_Process.cxx
++++ b/ros/src/WOKUnix/WOKUnix_Process.cxx
+@@ -373,6 +373,6 @@ void WOKUnix_Process::Kill()
+ void WOKUnix_Process::Destroy()
+ {
+  Kill();
+- delete myargv;
++ delete [] myargv;
+ }
+ #endif
