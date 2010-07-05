@@ -272,3 +272,39 @@ diff -uNr OpenCASCADE6.3.0-old/ros/src/XmlLDrivers/XmlLDrivers_DocumentStorageDr
    }
    if (!aResourceDir.IsEmpty()) {
      TCollection_AsciiString aResourceFileName =  aResourceDir + "/XmlOcaf.xsd";
+Index: opencascade/ros/src/Resource/Resource_Manager.cxx
+===================================================================
+--- opencascade.orig/ros/src/Resource/Resource_Manager.cxx
++++ opencascade/ros/src/Resource/Resource_Manager.cxx
+@@ -56,10 +56,16 @@
+ {
+   Debug = (getenv("ResourceDebug") != NULL) ;
+ 
+-  TCollection_AsciiString EnvVar, CSF_ = "CSF_" ;
++  TCollection_AsciiString EnvVar, DefaultVar = "/usr/share/OpenCASCADE/src/", CSF_ = "CSF_" ;
++  TCollection_AsciiString Name = aName ;
+   TCollection_AsciiString Directory ;
+   Standard_CString dir ;
+ 
++  if ( Name.IsEqual("STEP") || Name.IsEqual("IGES"))
++    DefaultVar += "XSTEPResource";
++  else
++    DefaultVar += "StdResource";
++
+   if ( getenv ("CSF_ResourceVerbose") != NULL )
+     myVerbose = Standard_True;
+ 
+@@ -69,9 +75,12 @@
+     Load(Directory,myName,myRefMap);
+   }
+   else
++  {
+     if (myVerbose)
+       cout << "Resource Manager Warning: Environment variable \"" << EnvVar
+-	   << "\" not set." << endl;
++	   << "\" not set, using default value \"" << DefaultVar << "\"." << endl;
++    Load(DefaultVar,myName,myRefMap);
++  }
+ 
+   EnvVar = CSF_ + aName + "UserDefaults" ;
+   if ((dir = getenv (EnvVar.ToCString())) != NULL) {
