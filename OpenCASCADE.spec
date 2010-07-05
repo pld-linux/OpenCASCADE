@@ -13,14 +13,20 @@
 #	- MIPS: http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/fix-asm.patch
 #	- PPC: http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/ppc.patch
 
-# TODO: - separate libs-x (80% of libraries)
+# TODO: - separate libs-x (80% of libraries) or even split packages as suggested by Jason Kraftcheck in Debian
+#	- check if WOK is working (review wok-install patch), add OCC icons and draw.desktop
 #	- consider arch-independent includes: http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/OCC64.patch
+#		http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/drop-config-h.patch
+#		http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/multibuf.patch
+#		and http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/tcl-cleanup.patch
+#	- TCL 8.6: http://git.debian.org/?p=debian-science/packages/opencascade.git;a=history;f=debian/patches/fix-tcl8.6.patch
+#	- review maint-mode, tkernel-ld and dep-libs patches, as well as hardcoded path in casroot patch
 
 Summary:	OpenCASCADE CAE platform
 Name:		OpenCASCADE
 # The 6.3.1 is a maintenance release, only available for OCC customers
 Version:	6.3.0
-Release:         40.3
+Release:	41
 License:	LGPL-like, see http://www.opencascade.org/occ/license/
 Group:		Applications/Engineering
 Source0:	http://files.opencascade.com/OCC_6.3_release/%{name}_src.tgz
@@ -30,16 +36,16 @@ Patch1:		%{name}6.3.0-strcmp.patch
 Patch2:		%{name}6.3.0-occ6.3.0.patch
 Patch3:		%{name}6.3.0-casroot.patch
 Patch4:		wokstep_extract.patch
-Patch5:          OpenCASCADE6.3.0-tkernel-ld.patch
+Patch5:		%{name}6.3.0-tkernel-ld.patch
 Patch6:		%{name}6.3.0-mft-disable-mmap.patch
 Patch7:		%{name}6.3.0-no-bitmaps-icon.patch
 Patch8:		%{name}6.3.0-DESTDIR.patch
-Patch9:          OpenCASCADE6.3.0-maint-mode.patch
-Patch10:         OpenCASCADE6.3.0-dep-libs.patch
+Patch9:		%{name}6.3.0-maint-mode.patch
+Patch10:	%{name}6.3.0-dep-libs.patch
 Patch11:	%{name}6.3.0-move-vrml-vis.patch
 Patch12:	%{name}6.3.0-make-wok-libs-private.patch
 Patch13:	%{name}6.3.0-make-draw-libs-private.patch
-Patch14:         OpenCASCADE6.3.0-wok-install.patch
+Patch14:	%{name}6.3.0-wok-install.patch
 Patch15:	%{name}6.3.0-udlist.patch
 Patch16:	%{name}6.3.0-WOKUnix_FDescr.patch
 Patch17:	fix-tklcaf.patch
