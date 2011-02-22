@@ -171,6 +171,8 @@ done
 ln -s %{_builddir}/%{name}%{version}/doc-i   $RPM_BUILD_ROOT%{_defaultdocdir}
 ln -s %{_builddir}/%{name}%{version}/samples-i $RPM_BUILD_ROOT%{_examplesdir}
 
+%{__rm} $RPM_BUILD_ROOT%{_libdir}{/opencas,}/*.la
+
 %post   libs -p /sbin/ldconfig
 %postun libs -p /sbin/ldconfig
 
@@ -189,7 +191,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/%{name}/src/UnitsAPI
 %{_datadir}/%{name}/src/UnitsAPI/*.dat
 %{_datadir}/%{name}/wok
-%dir %{_libdir}/opencas
 %attr(755,root,root) %{_libdir}/opencas/*.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/opencas/*.so.0
 
@@ -198,12 +199,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc LICENSE ros/README.txt
 %attr(755,root,root) %{_libdir}/*.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/*.so.0
+%dir %{_libdir}/opencas
 
 %files devel
 %defattr(644,root,root,755)
 %{_includedir}/%{name}
-%{_libdir}/opencas/*.la
-%{_libdir}/*.la
 %attr(755,root,root) %{_libdir}/opencas/*.so
 %attr(755,root,root) %{_libdir}/*.so
 %{_datadir}/%{name}/src/*
