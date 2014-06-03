@@ -26,7 +26,7 @@ Summary:	OpenCASCADE CAE platform
 Name:		OpenCASCADE
 # The 6.3.1 is a maintenance release, only available for OCC customers
 Version:	6.3.0
-Release:	42
+Release:	43
 License:	LGPL-like, see http://www.opencascade.org/occ/license/
 Group:		Applications/Engineering
 Source0:	http://files.opencascade.com/OCC_6.3_release/%{name}_src.tgz
@@ -49,13 +49,14 @@ Patch14:	%{name}6.3.0-wok-install.patch
 Patch15:	%{name}6.3.0-udlist.patch
 Patch16:	%{name}6.3.0-WOKUnix_FDescr.patch
 Patch17:	fix-tklcaf.patch
+Patch18:	%{name}-build.patch
 URL:		http://www.opencascade.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
 %ifnarch i486
-BuildRequires:	java-sun-jdk-base
+BuildRequires:	jdk
 %endif
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
@@ -121,6 +122,7 @@ OpenCASCADE samples.
 %patch15 -p1
 %patch16 -p1
 %patch17 -p1
+%patch18 -p1
 cd ros/src/ExprIntrp
 bison -d -p ExprIntrp -o ExprIntrp.tab.c ExprIntrp.yacc
 flex -L -8 -Cf -Cr -P ExprIntrp -o lex.ExprIntrp.c ExprIntrp.lex
@@ -136,11 +138,11 @@ cd ros
 %{__automake}
 
 %ifarch x86_64 ppc64
-export CFLAGS="%{rpmcflags} -D_OCC64 -fno-strict-aliasing"
-export CXXFLAGS="%{rpmcflags} -D_OCC64 -fno-strict-aliasing"
+export CFLAGS="%{rpmcflags} -D_OCC64 -fno-strict-aliasing -DUSE_INTERP_RESULT"
+export CXXFLAGS="%{rpmcflags} -D_OCC64 -fno-strict-aliasing -DUSE_INTERP_RESULT"
 %else
-export CFLAGS="%{rpmcflags} -fno-strict-aliasing"
-export CXXFLAGS="%{rpmcflags} -fno-strict-aliasing"
+export CFLAGS="%{rpmcflags} -fno-strict-aliasing -DUSE_INTERP_RESULT"
+export CXXFLAGS="%{rpmcflags} -fno-strict-aliasing -DUSE_INTERP_RESULT"
 %endif
 LDFLAGS=-lpthread %configure \
 	%{?debug:--disable-production  --enable-debug} \

@@ -1,0 +1,65 @@
+--- OpenCASCADE6.3.0/ros/configure.in~	2014-06-03 13:19:52.000000000 +0200
++++ OpenCASCADE6.3.0/ros/configure.in	2014-06-03 13:23:59.627135512 +0200
+@@ -24,7 +24,6 @@
+ AM_PROG_LIBTOOL
+ AC_PROG_CXX
+ AC_PROG_CC_C_O
+-AM_C_PROTOTYPES
+ 
+ AC_PROG_AWK
+ AC_PROG_INSTALL
+--- OpenCASCADE6.3.0/ros/src/OpenGl/OpenGl_degmodel.c~	2001-09-21 09:57:40.000000000 +0200
++++ OpenCASCADE6.3.0/ros/src/OpenGl/OpenGl_degmodel.c	2014-06-03 14:17:23.552574867 +0200
+@@ -101,7 +101,7 @@
+ 
+  }  /* end switch */
+ 
+- fprintf ( stdout, ptr );
++ fprintf ( stdout, "%s", ptr );
+ 
+  return TSuccess;
+ 
+--- OpenCASCADE6.3.0/ros/src/IFSelect/IFSelect_SessionPilot.cxx~	2007-09-14 15:28:20.000000000 +0200
++++ OpenCASCADE6.3.0/ros/src/IFSelect/IFSelect_SessionPilot.cxx	2014-06-03 14:27:40.856874774 +0200
+@@ -222,7 +222,7 @@
+ 
+   for (;;) {
+     char ligne[100];
+-    if (!lefic) printf (theprompt.ToCString());
++    if (!lefic) printf ("%s", theprompt.ToCString());
+     ligne[0] = '\0';
+     fgets(ligne,100,fic);
+     if (feof(fic)) break;
+--- OpenCASCADE6.3.0/ros/src/BOPTest/BOPTest_LowCommands.cxx~	2008-08-15 15:57:31.000000000 +0200
++++ OpenCASCADE6.3.0/ros/src/BOPTest/BOPTest_LowCommands.cxx	2014-06-03 14:43:20.658784793 +0200
+@@ -716,24 +716,24 @@
+   //
+   switch (aState) {
+   case TopAbs_IN:		
+-    sprintf(sbf, sIN.ToCString());
++    sprintf(sbf, "%s", sIN.ToCString());
+     break;
+   case TopAbs_OUT:		
+-    sprintf(sbf, sOUT.ToCString());
++    sprintf(sbf, "%s", sOUT.ToCString());
+     break;
+   case TopAbs_ON:		
+-    sprintf(sbf, sON.ToCString());
++    sprintf(sbf, "%s", sON.ToCString());
+     break;
+   case TopAbs_UNKNOWN:		
+-    sprintf(sbf, sUNKNOWN.ToCString());
++    sprintf(sbf, "%s", sUNKNOWN.ToCString());
+     break;
+   default:
+-    sprintf(sbf, sUNKNOWN.ToCString()); 
++    sprintf(sbf, "%s", sUNKNOWN.ToCString()); 
+     break;
+   }
+   aDI<<sbf; 
+ 	//
+-  sprintf(sbf, " shape\n");
++  sprintf(sbf, "%s", " shape\n");
+   aDI<<sbf;
+   
+ }
