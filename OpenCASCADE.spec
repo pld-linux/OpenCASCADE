@@ -26,7 +26,7 @@ Summary:	OpenCASCADE CAE platform
 Name:		OpenCASCADE
 # The 6.3.1 is a maintenance release, only available for OCC customers
 Version:	6.3.0
-Release:	43
+Release:	44
 License:	LGPL-like, see http://www.opencascade.org/occ/license/
 Group:		Applications/Engineering
 Source0:	http://files.opencascade.com/OCC_6.3_release/%{name}_src.tgz
@@ -91,6 +91,9 @@ OpenCASCADE development files.
 %package doc
 Summary:	OpenCASCADE documentation
 Group:		Documentation
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description doc
 OpenCASCADE help and html documentation.
@@ -98,6 +101,9 @@ OpenCASCADE help and html documentation.
 %package samples
 Summary:	OpenCASCADE samples
 Group:		Documentation
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description samples
 OpenCASCADE samples.
