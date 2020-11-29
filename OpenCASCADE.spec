@@ -203,16 +203,17 @@ ln -s %{_builddir}/%{name}%{version}/samples-i $RPM_BUILD_ROOT%{_examplesdir}
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}{/opencas,}/*.la
 
-%post   libs -p /sbin/ldconfig
-%postun libs -p /sbin/ldconfig
-
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%post   libs -p /sbin/ldconfig
+%postun libs -p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/DRAWEXE
-%attr(755,root,root) %{_bindir}/wok*
+%attr(755,root,root) %{_bindir}/wokprocess
+%attr(755,root,root) %{_bindir}/woksh
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/config.h
 %{_datadir}/%{name}/data
@@ -221,21 +222,37 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/%{name}/src/UnitsAPI
 %{_datadir}/%{name}/src/UnitsAPI/*.dat
 %{_datadir}/%{name}/wok
-%attr(755,root,root) %{_libdir}/opencas/*.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/opencas/*.so.0
+%attr(755,root,root) %{_libdir}/opencas/lib*.so*
 
 %files libs
 %defattr(644,root,root,755)
 %doc LICENSE ros/README.txt
-%attr(755,root,root) %{_libdir}/*.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/*.so.0
+%attr(755,root,root) %{_libdir}/libBin*Plugin.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libBin*Plugin.so.0
+%attr(755,root,root) %{_libdir}/libTWOSPlugin.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libTWOSPlugin.so.0
+%attr(755,root,root) %{_libdir}/libPTKernel.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libPTKernel.so.0
+%attr(755,root,root) %{_libdir}/libStd*Plugin.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libStd*Plugin.so.0
+%attr(755,root,root) %{_libdir}/libTK*.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libTK*.so.0
+%attr(755,root,root) %{_libdir}/libXCAFPlugin.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libXCAFPlugin.so.0
+%attr(755,root,root) %{_libdir}/libXml*Plugin.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libXml*Plugin.so.0
 %dir %{_libdir}/opencas
 
 %files devel
 %defattr(644,root,root,755)
 %{_includedir}/%{name}
-%attr(755,root,root) %{_libdir}/opencas/*.so
-%attr(755,root,root) %{_libdir}/*.so
+%attr(755,root,root) %{_libdir}/libBin*Plugin.so
+%attr(755,root,root) %{_libdir}/libTWOSPlugin.so
+%attr(755,root,root) %{_libdir}/libPTKernel.so
+%attr(755,root,root) %{_libdir}/libStd*Plugin.so
+%attr(755,root,root) %{_libdir}/libTK*.so
+%attr(755,root,root) %{_libdir}/libXCAFPlugin.so
+%attr(755,root,root) %{_libdir}/libXml*Plugin.so
 %{_datadir}/%{name}/src/*
 %exclude %{_datadir}/%{name}/src/UnitsAPI/*.dat
 
