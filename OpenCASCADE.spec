@@ -23,12 +23,14 @@
 #	- review maint-mode, tkernel-ld and dep-libs patches, as well as hardcoded path in casroot patch
 
 Summary:	OpenCASCADE CAE platform
+Summary(pl.UTF-8):	Platforma CAE OpenCASCADE
 Name:		OpenCASCADE
 # The 6.3.1 is a maintenance release, only available for OCC customers
 Version:	6.3.0
 Release:	44
 License:	LGPL-like, see http://www.opencascade.org/occ/license/
 Group:		Applications/Engineering
+#Source0Download: https://old.opencascade.com/content/latest-release
 Source0:	http://files.opencascade.com/OCC_6.3_release/%{name}_src.tgz
 # Source0-md5:	52778127974cb3141c2827f9d40d1f11
 Patch0:		%{name}6.3.0-obs-check.patch
@@ -50,63 +52,84 @@ Patch15:	%{name}6.3.0-udlist.patch
 Patch16:	%{name}6.3.0-WOKUnix_FDescr.patch
 Patch17:	fix-tklcaf.patch
 Patch18:	%{name}-build.patch
-URL:		http://www.opencascade.org/
+URL:		https://www.opencascade.com/open-cascade-technology/
+BuildRequires:	OpenGL-GLU-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	flex
-%ifnarch i486
+%ifnarch i386 i486
 BuildRequires:	jdk
 %endif
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
-BuildRequires:	Mesa-libGLU-devel
+BuildRequires:	rpmbuild(macros) >= 1.752
 BuildRequires:	tk-devel
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXmu-devel
 BuildRequires:	xorg-proto-xproto-devel
+Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-OpenCASCADE is a suite for 3D surface and solid modeling, visualization, data
-exchange and rapid application development.  It is an excellent platform for
-development of numerical simulation software including CAD/CAM/CAE, AEC and
-GIS, as well as PDM applications.
+OpenCASCADE is a suite for 3D surface and solid modeling,
+visualization, data exchange and rapid application development. It is
+an excellent platform for development of numerical simulation software
+including CAD/CAM/CAE, AEC and GIS, as well as PDM applications.
+
+%description -l pl.UTF-8
+OpenCASCADE to szkielet do modelowania powierzchni i brył 3D wraz z
+wizualizacją, wymianą danych i wsparciem szybkiego tworzenia
+aplikacji. Jest to świetna platforma do rozwoju oprogramowania
+symulacji numerycznych, w tym CAD/CAM/CAE, AEC oraz GIS, a także
+aplikacji PDM.
 
 %package libs
 Summary:	OpenCASCADE shared libraries
+Summary(pl.UTF-8):	Biblioteki współdzielone OpenCASCADE
 Group:		Libraries
 
 %description libs
 OpenCASCADE shared libraries.
 
+%description libs -l pl.UTF-8
+Biblioteki współdzielone OpenCASCADE.
+
 %package devel
 Summary:	OpenCASCADE development files
+Summary(pl.UTF-8):	Pliki programistyczne OpenCASCADE
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 
 %description devel
 OpenCASCADE development files.
 
+%description devel -l pl.UTF-8
+Pliki programistyczne OpenCASCADE.
+
 %package doc
 Summary:	OpenCASCADE documentation
+Summary(pl.UTF-8):	Dokumentacja do OpenCASCADE
 Group:		Documentation
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
+%{?noarchpackage}
 
 %description doc
-OpenCASCADE help and html documentation.
+OpenCASCADE help and HTML documentation.
+
+%description doc -l pl.UTF-8
+Pomoc oraz dokumentacja w formacie HTML do OpenCASCADE.
 
 %package samples
 Summary:	OpenCASCADE samples
+Summary(pl.UTF-8):	Przykłady do OpenCASCADE
 Group:		Documentation
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
+%{?noarchpackage}
 
 %description samples
 OpenCASCADE samples.
+
+%description samples -l pl.UTF-8
+Przykłady do OpenCASCADE.
 
 %prep
 %setup -q -n %{name}%{version}
@@ -132,7 +155,7 @@ OpenCASCADE samples.
 cd ros/src/ExprIntrp
 bison -d -p ExprIntrp -o ExprIntrp.tab.c ExprIntrp.yacc
 flex -L -8 -Cf -Cr -P ExprIntrp -o lex.ExprIntrp.c ExprIntrp.lex
-mv ExprIntrp.tab.h ../../inc/
+%{__mv} ExprIntrp.tab.h ../../inc/
 cp ExprIntrp.tab.c lex.ExprIntrp.c ../../drv/ExprIntrp/
 
 %build
@@ -150,8 +173,9 @@ export CXXFLAGS="%{rpmcflags} -D_OCC64 -fno-strict-aliasing -DUSE_INTERP_RESULT"
 export CFLAGS="%{rpmcflags} -fno-strict-aliasing -DUSE_INTERP_RESULT"
 export CXXFLAGS="%{rpmcflags} -fno-strict-aliasing -DUSE_INTERP_RESULT"
 %endif
-LDFLAGS=-lpthread %configure \
-	%{?debug:--disable-production  --enable-debug} \
+LDFLAGS=-lpthread \
+%configure \
+	%{?debug:--disable-production --enable-debug} \
 	%{!?debug:--enable-production --disable-debug} \
 	--with-java-include="%{java_home}"/include
 
@@ -161,20 +185,18 @@ LDFLAGS=-lpthread %configure \
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_datadir}/%{name},%{_includedir}}
 
-cd ros
-%{__make} install \
+%{__make} -C ros install \
 	DESTDIR=$RPM_BUILD_ROOT
-cd ..
 
 cp -a data $RPM_BUILD_ROOT%{_datadir}/%{name}
-mv $RPM_BUILD_ROOT{%{_prefix}/{src,wok,config.h,env_DRAW.sh},%{_datadir}/%{name}}
-mv $RPM_BUILD_ROOT{%{_prefix}/inc,%{_includedir}/%{name}}
-rm -r $RPM_BUILD_ROOT%{_prefix}/{Linux,lin}
+%{__mv} $RPM_BUILD_ROOT{%{_prefix}/{src,wok,config.h,env_DRAW.sh},%{_datadir}/%{name}}
+%{__mv} $RPM_BUILD_ROOT{%{_prefix}/inc,%{_includedir}/%{name}}
+%{__rm} -r $RPM_BUILD_ROOT%{_prefix}/{Linux,lin}
 
-mkdir -p $RPM_BUILD_ROOT/usr/src
+install -d $RPM_BUILD_ROOT/usr/src
 for i in doc samples; do
-mkdir -p $i-i
-[ -d $i ] && mv $i $i-i/%{name}-%{version} || :
+install -d ${i}-i
+[ -d $i ] && %{__mv} $i ${i}-i/%{name}-%{version} || :
 done
 ln -s %{_builddir}/%{name}%{version}/doc-i   $RPM_BUILD_ROOT%{_defaultdocdir}
 ln -s %{_builddir}/%{name}%{version}/samples-i $RPM_BUILD_ROOT%{_examplesdir}
