@@ -1,0 +1,11 @@
+--- opencascade-7.5.0/tools/TInspectorEXE/TInspectorEXE.cxx.orig	2020-12-29 21:09:40.406098001 +0100
++++ opencascade-7.5.0/tools/TInspectorEXE/TInspectorEXE.cxx	2020-12-29 21:09:43.236082670 +0100
+@@ -41,6 +41,8 @@
+   OSD_Environment anEnvironment (theEnvironmentDir);
+   
+   TCollection_AsciiString aFileName = anEnvironment.Value();
++  if (aFileName.IsEmpty())
++	  aFileName = "/usr/share/opencascade/data";
+   aFileName += TCollection_AsciiString ("/") + theName;
+ 
+   return aFileName;
