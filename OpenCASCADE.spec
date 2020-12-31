@@ -26,7 +26,7 @@
 %bcond_without	freeimage	# FreeImage support
 %bcond_without	qt		# Qt based inspector
 %bcond_without	tbb		# TBB support
-%bcond_with	vtk		# VTK toolkit
+%bcond_without	vtk		# VTK toolkit
 
 Summary:	OpenCASCADE CAE platform
 Summary(pl.UTF-8):	Platforma CAE OpenCASCADE
@@ -162,6 +162,32 @@ Header files for OCCT Inspector libraries.
 %description inspector-devel -l pl.UTF-8
 Pliki nagłówkowe bibliotek OCCT Inspector.
 
+%package vtk
+Summary:	OCCT VTK libraries
+Summary(pl.UTF-8):	Biblioteki OCCT VTK
+Group:		Libraries
+Requires:	%{name}-libs = %{version}-%{release}
+
+%description vtk
+OCCT VTK libraries.
+
+%description vtk -l pl.UTF-8
+Biblioteki OCCT VTK.
+
+%package vtk-devel
+Summary:	Header files for OCCT VTK libraries
+Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek OCCT VTK
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+Requires:	%{name}-vtk = %{version}-%{release}
+Requires:	vtk-devel
+
+%description vtk-devel
+Header files for OCCT VTK libraries.
+
+%description vtk-devel -l pl.UTF-8
+Pliki nagłówkowe bibliotek OCCT VTK.
+
 %package doc
 Summary:	OpenCASCADE documentation
 Summary(pl.UTF-8):	Dokumentacja do OpenCASCADE
@@ -201,13 +227,17 @@ cd build
 	%{?with_qt:-DBUILD_Inspector=ON} \
 	-DBUILD_YACCLEX=ON \
 	-DCMAKE_CONFIGURATION_TYPES=%{?debug:Debug}%{!?debug:PLD} \
+	-DINSTALL_DIR_CMAKE=%{_lib}/cmake/opencascade \
+	-DINSTALL_DIR_LIB=%{_lib} \
 	-DUSE_EIGEN=ON \
 	%{?with_ffmpeg:-DUSE_FFMPEG=ON} \
 	%{?with_freeimage:-DUSE_FREEIMAGE=ON} \
 	%{?with_tbb:-DUSE_TBB=ON} \
 	%{?with_vtk:-DUSE_VTK=ON}
 
-%{__make}
+# CMAKE_VERBOSE_MAKEFILE seems to be ignored
+%{__make} \
+	VERBOSE=1
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -497,6 +527,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/opencascade/*.h
 %{_includedir}/opencascade/*.hxx
 %{_includedir}/opencascade/*.lxx
+%if %{with vtk}
+%{_includedir}/opencascade/IVtk*.hxx
+%endif
 %{_libdir}/cmake/opencascade
 %{_datadir}/opencascade/samples
 
@@ -543,6 +576,23 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libTKVInspector.so
 %attr(755,root,root) %{_libdir}/libTKView.so
 %{_includedir}/opencascade/inspector
+
+%if %{with vtk}
+%files vtk
+%defattr(644,root,root,755)
+# R: libTKBRep libTKG2d libTKG3d libTKMath libTKMesh libTKTopAlgo libTKV3D libTKernel libvtkCommonCore libvtkCommonDataModel libvtkCommonExecutionModel libvtkCommonMath libvtkCommonTransforms libvtkFiltersGeneral libvtkInteractionStyle libvtkRenderingCore libvtkRenderingFreeType libvtkRenderingOpenGL2
+%attr(755,root,root) %{_libdir}/libTKIVtk.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libTKIVtk.so.7
+# R: libTKBRep libTKDraw libTKG3d libTKIVtk libTKMath libTKService libTKernel libX11 libvtkCommonCore libvtkCommonExecutionModel libvtkIOImage libvtkImagingCore libvtkInteractionStyle libvtkRenderingCore libvtkRenderingFreeType libvtkRenderingGL2PSOpenGL2 libvtkRenderingOpenGL2 tcl
+%attr(755,root,root) %{_libdir}/libTKIVtkDraw.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libTKIVtkDraw.so.7
+
+%files vtk-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libTKIVtk.so
+%attr(755,root,root) %{_libdir}/libTKIVtkDraw.so
+%{_includedir}/opencascade/IVtk*.hxx
+%endif
 
 %files doc
 %defattr(644,root,root,755)
