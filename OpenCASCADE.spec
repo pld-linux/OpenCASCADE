@@ -192,7 +192,7 @@ Pliki nagłówkowe bibliotek OCCT VTK.
 Summary:	OpenCASCADE documentation
 Summary(pl.UTF-8):	Dokumentacja do OpenCASCADE
 Group:		Documentation
-%{?noarchpackage}
+BuildArch:	noarch
 
 %description doc
 OpenCASCADE help and HTML documentation.
@@ -204,7 +204,7 @@ Pomoc oraz dokumentacja w formacie HTML do OpenCASCADE.
 Summary:	OpenCASCADE samples
 Summary(pl.UTF-8):	Przykłady do OpenCASCADE
 Group:		Documentation
-%{?noarchpackage}
+BuildArch:	noarch
 
 %description samples
 OpenCASCADE samples.
