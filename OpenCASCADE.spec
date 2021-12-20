@@ -32,7 +32,7 @@ Summary:	OpenCASCADE CAE platform
 Summary(pl.UTF-8):	Platforma CAE OpenCASCADE
 Name:		OpenCASCADE
 Version:	7.5.0
-Release:	3
+Release:	4
 License:	LGPL-like, see http://www.opencascade.org/occ/license/
 Group:		Applications/Engineering
 #Source0Download: https://old.opencascade.com/content/latest-release
