@@ -60,6 +60,7 @@ BuildRequires:	jdk
 BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtool
 BuildRequires:	rapidjson-devel
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.752
 %{?with_tbb:BuildRequires:	tbb-devel >= 2021.4}
 BuildRequires:	tcl-devel
