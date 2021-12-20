@@ -42,6 +42,7 @@ Source0:	https://github.com/tpaviot/oce/releases/download/official-upstream-pack
 # Source0-md5:	eb62af12f173b7ce32209701cdd877ea
 Patch0:		%{name}-cmake.patch
 Patch1:		%{name}-inspector-data.patch
+Patch2:		%{name}-tbb.patch
 URL:		https://www.opencascade.com/open-cascade-technology/
 %{?with_freeimage:BuildRequires:	FreeImage-devel}
 BuildRequires:	OpenGL-GLU-devel
@@ -60,7 +61,7 @@ BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtool
 BuildRequires:	rapidjson-devel
 BuildRequires:	rpmbuild(macros) >= 1.752
-%{?with_tbb:BuildRequires:	tbb-devel}
+%{?with_tbb:BuildRequires:	tbb-devel >= 2021.4}
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
 %{?with_vtk:BuildRequires:	vtk-devel}
@@ -77,6 +78,7 @@ BuildRequires:	qt5-build >= 5
 BuildRequires:	qt5-linguist >= 5
 %endif
 Requires:	%{name}-libs = %{version}-%{release}
+%{?with_tbb:Requires:	tbb >= 2021.4}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_noautocompressdoc	*.chm
@@ -216,6 +218,7 @@ Przykłady do OpenCASCADE.
 %setup -q -n opencascade-%{version}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %{__sed} -i -e '/set (CMAKE_CONFIGURATION_TYPES/ { s/INTERNAL/STRING/;s/ FORCE// }' CMakeLists.txt
 
