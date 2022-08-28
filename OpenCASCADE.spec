@@ -22,6 +22,7 @@
 #	- OpenVR?
 
 # Conditional build:
+%bcond_without	apidocs		# API documentation
 %bcond_without	ffmpeg		# FFmpeg support
 %bcond_without	freeimage	# FreeImage support
 %bcond_without	qt		# Qt based inspector
@@ -31,15 +32,13 @@
 Summary:	OpenCASCADE CAE platform
 Summary(pl.UTF-8):	Platforma CAE OpenCASCADE
 Name:		OpenCASCADE
-Version:	7.5.0
-Release:	4
+Version:	7.6.3
+Release:	1
 License:	LGPL-like, see http://www.opencascade.org/occ/license/
 Group:		Applications/Engineering
-#Source0Download: https://old.opencascade.com/content/latest-release
-#Source0:	https://old.opencascade.com/sites/default/files/private/occt/OCC_7.5.0_release/opencascade-%{version}.tgz
-# official URL requires login, external archive:
-Source0:	https://github.com/tpaviot/oce/releases/download/official-upstream-packages/opencascade-7.5.0.tgz
-# Source0-md5:	eb62af12f173b7ce32209701cdd877ea
+# https://dev.opencascade.org/content/open-cascade-technology-763-maintenance-release (V7_6_3 tag)
+Source0:	https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=b079fb9877ef64d4a8158a60fa157f59b096debb;sf=tgz#/%{name}-%{version}.tar.gz
+# Source0-md5:	8f090077c45dfa0e2a261aba6b491ca8
 Patch0:		%{name}-cmake.patch
 Patch1:		%{name}-inspector-data.patch
 Patch2:		%{name}-tbb.patch
@@ -77,6 +76,12 @@ BuildRequires:	Qt5Widgets-devel >= 5
 BuildRequires:	Qt5Xml-devel >= 5
 BuildRequires:	qt5-build >= 5
 BuildRequires:	qt5-linguist >= 5
+%endif
+%if %{with apidocs}
+BuildRequires:	doxygen
+BuildRequires:	graphviz
+BuildRequires:	inkscape
+BuildRequires:	texlive-pdftex
 %endif
 Requires:	%{name}-libs = %{version}-%{release}
 %{?with_tbb:Requires:	tbb >= 2021.4}
@@ -216,7 +221,7 @@ OpenCASCADE samples.
 Przykłady do OpenCASCADE.
 
 %prep
-%setup -q -n opencascade-%{version}
+%setup -q -n occt-b079fb9
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -242,6 +247,14 @@ cd build
 # CMAKE_VERBOSE_MAKEFILE seems to be ignored
 %{__make} \
 	VERBOSE=1
+
+cd ..
+
+%if %{with apidocs}
+./gendoc -overview -html
+./gendoc -refman -html
+%{__rm} doc/refman/OCCT.{dox,tag}
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -361,12 +374,21 @@ rm -rf $RPM_BUILD_ROOT
 # R: libTKMath libTKService libTKV3d libTKernel
 %attr(755,root,root) %{_libdir}/libTKMeshVS.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libTKMeshVS.so.7
+# R: libTKBRep libTKMath libTKTInspectorAPI libTKTreeModel libTKernel Qt5Core Qt5Gui Qt5Widgets
+%attr(755,root,root) %{_libdir}/libTKMessageModel.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libTKMessageModel.so.7
+# R: libTKBRep libTKMessageModel libTKService libTKTInspectorAPI libTKTopAlgo libTKTreeModel libTKV3d.so libTKView.so libTKernel QtCore QtWidgets
+%attr(755,root,root) %{_libdir}/libTKMessageView.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libTKMessageView.so.7
 # R: libTKBO libTKBRep libTKBool libTKFillet libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKMath libTKPrim libTKShHealing libTKTopAlgo libTKernel
 %attr(755,root,root) %{_libdir}/libTKOffset.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libTKOffset.so.7
 # R: libTKMath libTKService libTKernel libGL libX11
 %attr(755,root,root) %{_libdir}/libTKOpenGl.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libTKOpenGl.so.7
+# R: libTKDraw libTKOpenGl libTKService libTKV3d libTKViewerTest libTKernel OpenGL
+%attr(755,root,root) %{_libdir}/libTKOpenGlTest.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libTKOpenGlTest.so.7
 # R: libTKBRep libTKG2d libTKG3d libTKGeomBase libTKMath libTKTopAlgo libTKernel
 %attr(755,root,root) %{_libdir}/libTKPrim.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libTKPrim.so.7
@@ -492,8 +514,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libTKMath.so
 %attr(755,root,root) %{_libdir}/libTKMesh.so
 %attr(755,root,root) %{_libdir}/libTKMeshVS.so
+%attr(755,root,root) %{_libdir}/libTKMessageModel.so
+%attr(755,root,root) %{_libdir}/libTKMessageView.so
 %attr(755,root,root) %{_libdir}/libTKOffset.so
 %attr(755,root,root) %{_libdir}/libTKOpenGl.so
+%attr(755,root,root) %{_libdir}/libTKOpenGlTest.so
 %attr(755,root,root) %{_libdir}/libTKPrim.so
 %attr(755,root,root) %{_libdir}/libTKQADraw.so
 %attr(755,root,root) %{_libdir}/libTKRWMesh.so
@@ -532,7 +557,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/opencascade/*.hxx
 %{_includedir}/opencascade/*.lxx
 %if %{with vtk}
-%{_includedir}/opencascade/IVtk*.hxx
+%exclude %{_includedir}/opencascade/IVtk*.hxx
 %endif
 %{_libdir}/cmake/opencascade
 %{_datadir}/opencascade/samples
@@ -598,9 +623,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/opencascade/IVtk*.hxx
 %endif
 
+%if %{with apidocs}
 %files doc
 %defattr(644,root,root,755)
-%doc doc/*
+%doc doc/{overview,refman}
+%endif
 
 %files samples
 %defattr(644,root,root,755)
