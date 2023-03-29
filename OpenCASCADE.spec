@@ -8,18 +8,10 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-# NOTE: there are some not PLD-relevant patches available:
-#	- kFreeBSD/Hurd: http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/fix-osd_path.patch
-#	- MIPS: http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/fix-asm.patch
-#	- PPC: http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/ppc.patch
-
 # TODO: - separate libs-x (80% of libraries), follow Fedora split or split packages as suggested by Jason Kraftcheck in Debian
-#	- consider arch-independent includes: http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/OCC64.patch
-#		http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/drop-config-h.patch
-#		http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/multibuf.patch
-#		and http://git.debian.org/?p=debian-science/packages/opencascade.git;a=blob;f=debian/patches/tcl-cleanup.patch
-#	- TCL 8.6: http://git.debian.org/?p=debian-science/packages/opencascade.git;a=history;f=debian/patches/fix-tcl8.6.patch
-#	- OpenVR?
+#	- OpenVR? (USE_OPENVR=ON) https://github.com/ValveSoftware/openvr
+#	- USE_RAPIDJSON=ON?
+#	- USE_DRACO=ON? https://github.com/google/draco
 
 # Conditional build:
 %bcond_without	apidocs		# API documentation
@@ -32,21 +24,22 @@
 Summary:	OpenCASCADE CAE platform
 Summary(pl.UTF-8):	Platforma CAE OpenCASCADE
 Name:		OpenCASCADE
-Version:	7.6.3
+Version:	7.7.1
 Release:	1
-License:	LGPL-like, see http://www.opencascade.org/occ/license/
+License:	LGPL v2.1 with Open CASCADE Exception v1.0
 Group:		Applications/Engineering
-# https://dev.opencascade.org/content/open-cascade-technology-763-maintenance-release (V7_6_3 tag)
-Source0:	https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=b079fb9877ef64d4a8158a60fa157f59b096debb;sf=tgz#/%{name}-%{version}.tar.gz
-# Source0-md5:	8f090077c45dfa0e2a261aba6b491ca8
+# https://dev.opencascade.org/release (requires account)
+#Source0:	https://dev.opencascade.org/system/files/occt/OCC_%{version}_release/opencascade-%{version}.tgz
+# https://git.dev.opencascade.org/gitweb/?p=occt.git;a=tags
+Source0:	https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=ffce0d66bbaafe3a95984d0e61804c201b9995d2;sf=tgz;out=/occt-%{version}.tar.gz
+# Source0-md5:	3e803b63a5b3b8780baceb6eeb2e88a8
 Patch0:		%{name}-cmake.patch
 Patch1:		%{name}-inspector-data.patch
-Patch2:		%{name}-tbb.patch
 URL:		https://www.opencascade.com/open-cascade-technology/
 %{?with_freeimage:BuildRequires:	FreeImage-devel}
 BuildRequires:	OpenGL-GLU-devel
 BuildRequires:	bison
-BuildRequires:	cmake >= 2.8.12
+BuildRequires:	cmake >= 3.1
 BuildRequires:	doxygen >= 1:1.8.4
 BuildRequires:	eigen3
 # avcodec avformat avutil swscale
@@ -221,12 +214,12 @@ OpenCASCADE samples.
 Przykłady do OpenCASCADE.
 
 %prep
-%setup -q -n occt-b079fb9
+%setup -q -n occt-ffce0d6
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %{__sed} -i -e '/set (CMAKE_CONFIGURATION_TYPES/ { s/INTERNAL/STRING/;s/ FORCE// }' CMakeLists.txt
+%{__sed} -i -e 's/IMPORTED_LOCATION_RELEASE/IMPORTED_LOCATION_PLD/' adm/cmake/tbb.cmake
 
 %build
 install -d build
@@ -263,6 +256,7 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{__mv} $RPM_BUILD_ROOT%{_bindir}/{DRAWEXE-%{version},DRAWEXE}
+%{__mv} $RPM_BUILD_ROOT%{_bindir}/{ExpToCasExe-%{version},ExpToCasExe}
 %if %{with qt}
 %{__mv} $RPM_BUILD_ROOT%{_bindir}/{TInspectorEXE-%{version},TInspectorEXE}
 %endif
@@ -297,6 +291,8 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/DRAWEXE
+# R: libTKExpress libTKernel
+%attr(755,root,root) %{_bindir}/ExpToCasExe
 %attr(755,root,root) %{_bindir}/draw.sh
 %dir %{_datadir}/opencascade
 %{_datadir}/opencascade/data
@@ -307,184 +303,193 @@ rm -rf $RPM_BUILD_ROOT
 %doc OCCT_LGPL_EXCEPTION.txt README.txt
 # R: libTKBRep libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKMath libTKPrim libTKShHealing libTKTopAlgo libTKernel
 %attr(755,root,root) %{_libdir}/libTKBO.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKBO.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKBO.so.7.7
 # R: libTKG2d libTKG3d libTKGeomBase libTKMath libTKernel
 %attr(755,root,root) %{_libdir}/libTKBRep.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKBRep.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKBRep.so.7.7
 # R: libTKBRep libTKBinL libTKCAF libTKCDF libTKLCAF libTKMath libTKernel
 %attr(755,root,root) %{_libdir}/libTKBin.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKBin.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKBin.so.7.7
 # R: libTKCDF libTKLCAF libTKernel
 %attr(755,root,root) %{_libdir}/libTKBinL.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKBinL.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKBinL.so.7.7
 # R: libTKBinL libTKCDF libTKLCAF libTKTObj libTKernel
 %attr(755,root,root) %{_libdir}/libTKBinTObj.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKBinTObj.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKBinTObj.so.7.7
 # R: libTKBRep libTKBin libTKBinL libTKCAF libTKCDF libTKLCAF libTKMath libTKService libTKXCAF libTKernel
 %attr(755,root,root) %{_libdir}/libTKBinXCAF.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKBinXCAF.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKBinXCAF.so.7.7
 # R: libTKBO libTKBRep libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKMath libTKPrim libTKShHealing libTKTopAlgo libTKernel
 %attr(755,root,root) %{_libdir}/libTKBool.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKBool.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKBool.so.7.7
 # R: libGKBO libTKBRep libTKCDF libTKG3d libTKGeomBase libTKLCAF libTKMath libTKTopAlgo libTKernel
 %attr(755,root,root) %{_libdir}/libTKCAF.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKCAF.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKCAF.so.7.7
 # R: libTKernel
 %attr(755,root,root) %{_libdir}/libTKCDF.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKCDF.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKCDF.so.7.7
 # R: libTKBO libTKBRep libTKBin libTKBinL libTKBool libTKCAF libTKCDF libTKDraw libTKFillet libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKLCAF libTKMath libTKPrim libTKStd libTKStdL libTKTopAlgo libTKV3d libTKVCAF libTKViewerTest libTKXml libTKXmlL libTKernel
 %attr(755,root,root) %{_libdir}/libTKDCAF.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKDCAF.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKDCAF.so.7.7
 # R: libTKBRep libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKHLR libGKMath libTKMesh libTKService libTKTopAlgo libTKernel libX11 tcl tk
 %attr(755,root,root) %{_libdir}/libTKDraw.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKDraw.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKDraw.so.7.7
+# R: libTKernel
+%attr(755,root,root) %{_libdir}/libTKExpress.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libTKExpress.so.7.7
 # R: libTKBO libTKBRep libTKBool libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKMath libTKPrim libTKShHealing libTKTopAlgo libTKernel
 %attr(755,root,root) %{_libdir}/libTKFeat.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKFeat.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKFeat.so.7.7
 # R: libTKBO libTKBRep libTKBool libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKMath libTKShHealing libTKTopAlgo libTKernel
 %attr(755,root,root) %{_libdir}/libTKFillet.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKFillet.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKFillet.so.7.7
 # R: libTKMath libTKernel
 %attr(755,root,root) %{_libdir}/libTKG2d.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKG2d.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKG2d.so.7.7
 # R: libTKG2d libTKMath libTKernel
 %attr(755,root,root) %{_libdir}/libTKG3d.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKG3d.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKG3d.so.7.7
 # R: libTKBRep libTKG2d libTKG3d libTKGeomBase libTKMath libTKernel
 %attr(755,root,root) %{_libdir}/libTKGeomAlgo.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKGeomAlgo.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKGeomAlgo.so.7.7
 # R: libTKG2d libTKG3d libTKMath libTKernel
 %attr(755,root,root) %{_libdir}/libTKGeomBase.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKGeomBase.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKGeomBase.so.7.7
 # R: libTKBRep libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKMath libTKTopAlgo libTKernel
 %attr(755,root,root) %{_libdir}/libTKHLR.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKHLR.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKHLR.so.7.7
 # R: libTKBRep libTKBool libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKMath libTKPrim libTKShHealing libTKTopAlgo libTKXSBase libTKernel
 %attr(755,root,root) %{_libdir}/libTKIGES.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKIGES.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKIGES.so.7.7
 # R: libTKCDF libTKernel
 %attr(755,root,root) %{_libdir}/libTKLCAF.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKLCAF.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKLCAF.so.7.7
 # R: libTKernel
 %attr(755,root,root) %{_libdir}/libTKMath.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKMath.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKMath.so.7.7
 # R: libTKBrep libTKG2d libTKG3d libTKGeomBase libTKMath libTKShHealing libTKTopAlgo libTKernel
 %attr(755,root,root) %{_libdir}/libTKMesh.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKMesh.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKMesh.so.7.7
 # R: libTKMath libTKService libTKV3d libTKernel
 %attr(755,root,root) %{_libdir}/libTKMeshVS.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKMeshVS.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKMeshVS.so.7.7
 # R: libTKBRep libTKMath libTKTInspectorAPI libTKTreeModel libTKernel Qt5Core Qt5Gui Qt5Widgets
 %attr(755,root,root) %{_libdir}/libTKMessageModel.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKMessageModel.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKMessageModel.so.7.7
 # R: libTKBRep libTKMessageModel libTKService libTKTInspectorAPI libTKTopAlgo libTKTreeModel libTKV3d.so libTKView.so libTKernel QtCore QtWidgets
 %attr(755,root,root) %{_libdir}/libTKMessageView.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKMessageView.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKMessageView.so.7.7
 # R: libTKBO libTKBRep libTKBool libTKFillet libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKMath libTKPrim libTKShHealing libTKTopAlgo libTKernel
 %attr(755,root,root) %{_libdir}/libTKOffset.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKOffset.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKOffset.so.7.7
 # R: libTKMath libTKService libTKernel libGL libX11
 %attr(755,root,root) %{_libdir}/libTKOpenGl.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKOpenGl.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKOpenGl.so.7.7
 # R: libTKDraw libTKOpenGl libTKService libTKV3d libTKViewerTest libTKernel OpenGL
 %attr(755,root,root) %{_libdir}/libTKOpenGlTest.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKOpenGlTest.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKOpenGlTest.so.7.7
 # R: libTKBRep libTKG2d libTKG3d libTKGeomBase libTKMath libTKTopAlgo libTKernel
 %attr(755,root,root) %{_libdir}/libTKPrim.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKPrim.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKPrim.so.7.7
 # R: libTKBO libTKBRep libTKBin libTKBinL libTKBinXCAF libTKBool libTKCAF libTKCDF libTKDCAF libTKDraw libTKFeat libTKFillet libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKHLR libTKIGES libTKLCAF libTKMath libTKMesh libTKOffset libTKPrim libTKService libTKShHealing libTKStd libTKStdL libTKTObj libTKTopAlgo libTKV3d libTKVCAF libTKViewerTest libTKXCAF libTKXDESTEP libTKXSBase libTKXml libTKXmlL libTKernel
 %attr(755,root,root) %{_libdir}/libTKQADraw.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKQADraw.so.7
-# R: libTKBRep libTKG3d liBTKLCAF libTKMath libTKMesh libTKService libTKXCAF libTKernel
+%attr(755,root,root) %ghost %{_libdir}/libTKQADraw.so.7.7
+# R: libTKBRep libTKG3d liBTKLCAF libTKMath libTKMesh libTKService libTKXCAF libTKXDE libTKernel
 %attr(755,root,root) %{_libdir}/libTKRWMesh.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKRWMesh.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKRWMesh.so.7.7
 # R: libTKBRep libTKG2d libTKG3d libTKGeomBase libTKMath libTKSTEP209 libTKSTEPAttr libTKSTEPBase libTKShHealing libTKTopAlgo libTKXSBase libTKernel
 %attr(755,root,root) %{_libdir}/libTKSTEP.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKSTEP.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKSTEP.so.7.7
 # R: libTKSTEPBase libTKXSBase libTKernel
 %attr(755,root,root) %{_libdir}/libTKSTEP209.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKSTEP209.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKSTEP209.so.7.7
 # R: libTKSTEPBase libTKXSBase libTKernel
 %attr(755,root,root) %{_libdir}/libTKSTEPAttr.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKSTEPAttr.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKSTEPAttr.so.7.7
 # R: libTKXSBase libTKernel
 %attr(755,root,root) %{_libdir}/libTKSTEPBase.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKSTEPBase.so.7
-# R: libTKBRep libTKMath libTKTopAlgo libTKernel
+%attr(755,root,root) %ghost %{_libdir}/libTKSTEPBase.so.7.7
+# R: libTKBRep libTKLCAF libTKMath libTKTopAlgo libTKXCAF libTKXDE libTKernel
 %attr(755,root,root) %{_libdir}/libTKSTL.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKSTL.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKSTL.so.7.7
 # R: libTKMath libTKernel libGL libX11 fontconfig freetype %{?with_ffmpeg:ffmpeg-libs} %{?with_freeimage:FreeImage}
 %attr(755,root,root) %{_libdir}/libTKService.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKService.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKService.so.7.7
 # R: libTKBrep libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKMath libTKTopAlgo libTKernel
 %attr(755,root,root) %{_libdir}/libTKShHealing.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKShHealing.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKShHealing.so.7.7
 # R: libTKBRep libTKCAF libTKCDF libTKG2d libG3d libGKLCAF libTKMath libTKStdL libTKernel
 %attr(755,root,root) %{_libdir}/libTKStd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKStd.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKStd.so.7.7
 # R: libTKCDF libTKLCAF libTKernel
 %attr(755,root,root) %{_libdir}/libTKStdL.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKStdL.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKStdL.so.7.7
 # R: libTKCDF libTKLCAF libTKernel
 %attr(755,root,root) %{_libdir}/libTKTObj.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKTObj.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKTObj.so.7.7
 # R: libTKBinTObj libTKDCAF libTKDraw libTKLCAF libTKTObj libTKXmlTObj libTKernel
 %attr(755,root,root) %{_libdir}/libTKTObjDRAW.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKTObjDRAW.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKTObjDRAW.so.7.7
 # R: libTKBRep libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKMath libTKernel
 %attr(755,root,root) %{_libdir}/libTKTopAlgo.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKTopAlgo.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKTopAlgo.so.7.7
 # R: libTKBO libTKBRep libTKBool libTKDraw libTKFeat libTKFillet libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKHLR libTKMath libTKMesh libTKOffset libTKPrim libTKShHealing libTKTopAlgo libTKernel
 %attr(755,root,root) %{_libdir}/libTKTopTest.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKTopTest.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKTopTest.so.7.7
 # R: libTKBRep liBTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKHLR libTKMath libTKMesh libTKService libTKTopAlgo libTKernel
 %attr(755,root,root) %{_libdir}/libTKV3d.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKV3d.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKV3d.so.7.7
 # R: libTKBRep libTKCAF libTKG3d libTKGeomBase libTKLCAF libTKMath libTKService libTKTopAlgo libTKV3d libTKernel
 %attr(755,root,root) %{_libdir}/libTKVCAF.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKVCAF.so.7
-# R: libTKBRep libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKHLR libTKLCAF libTKMath libTKPrim libTKTopAlgo libTKV3d libTKXCAF libTKernel
+%attr(755,root,root) %ghost %{_libdir}/libTKVCAF.so.7.7
+# R: libTKBRep libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKHLR libTKLCAF libTKMath libTKMesh libTKPrim libTKRWMesh libTKTopAlgo libTKV3d libTKXCAF libTKXDE libTKernel
 %attr(755,root,root) %{_libdir}/libTKVRML.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKVRML.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKVRML.so.7.7
 # R: libGKBRep libTKBool libTKDraw libTKFillet libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKHLR libTKMath libTKOffset libTKOpenGl libTKService libTKTopAlgo libTKV3d libTKernel libGL libX11 tcl
 %attr(755,root,root) %{_libdir}/libTKViewerTest.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKViewerTest.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKViewerTest.so.7.7
 # R: libTKBRep libTKCAF libTKCDF libTKG3d libTKLCAF libTKMath libTKService libTKTopAlgo libTKVCAF libTKernel
 %attr(755,root,root) %{_libdir}/libTKXCAF.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKXCAF.so.7
-# R: libTKBRep libTKBinXCAF libTKCAF libTKCDF libTKDCAF libTKDraw libTKG3d libTKIGES libTKLCAF libTKMath libTKMesh libTKSTEP libTKService libTKTopAlgo libTKV3d libTKVCAF libTKVRML libTKViewerTest libTKXCAF libTKXDEIGES libTKXDESTEP libTKXSBase libTKXSDRAW libTKXmlXCAF libTKernel
+%attr(755,root,root) %ghost %{_libdir}/libTKXCAF.so.7.7
+# R: libTKernel
+%attr(755,root,root) %{_libdir}/libTKXDE.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libTKXDE.so.7.7
+# R: libTKBRep libTKBin libTKBinL libTKBinTObj libTKBinXCAF libTKCDF libTKLCAF libTKMath libTKStd libTKStdL libTKXCAF libTKXDE libTKXml libTKXmlL libTKXmlTObj libTKXmlTObj libTKXmlXCAF libTKernel
+%attr(755,root,root) %{_libdir}/libTKXDECascade.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libTKXDECascade.so.7.7
+# R: libTKBRep libTKBinXCAF libTKCAF libTKCDF libTKDCAF libTKDraw libTKG3d libTKIGES libTKLCAF libTKMath libTKMesh libTKSTEP libTKService libTKTopAlgo libTKV3d libTKVCAF libTKVRML libTKViewerTest libTKXCAF libTKXDE libTKXDECascade libTKXDEIGES libTKXDESTEP libTKXSBase libTKXSDRAW libTKXmlXCAF libTKernel
 %attr(755,root,root) %{_libdir}/libTKXDEDRAW.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKXDEDRAW.so.7
-# R: libTKBRep libTKIGES libTKLCAF libTKMath libTKXCAF libTKXSBase libTKernel
+%attr(755,root,root) %ghost %{_libdir}/libTKXDEDRAW.so.7.7
+# R: libTKBRep libTKIGES libTKLCAF libTKMath libTKXCAF libTKXDE libTKXSBase libTKernel
 %attr(755,root,root) %{_libdir}/libTKXDEIGES.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKXDEIGES.so.7
-# R: libTKBRep libTKCAF libTKG3d libTKLCAF libTKMath libTKSTEP libTKSTEPAttr libTKSTEPBase libTKShHealing libTKTopAlgo libTKXCAF libTKXSBase libTKernel
+%attr(755,root,root) %ghost %{_libdir}/libTKXDEIGES.so.7.7
+# R: libTKBRep libTKG3d libTKLCAF libTKMath libTKSTEP libTKSTEPAttr libTKSTEPBase libTKShHealing libTKTopAlgo libTKXCAF libTKXDE libTKXSBase libTKernel
 %attr(755,root,root) %{_libdir}/libTKXDESTEP.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKXDESTEP.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKXDESTEP.so.7.7
 # R: libTKMath libTKMesh libTKernel
 %attr(755,root,root) %{_libdir}/libTKXMesh.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKXMesh.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKXMesh.so.7.7
 # R: libTKBRep libTKG2d libTKG3d libTKGeomBase libTKMath libTKShHealing libTKTopAlgo libTKernel
 %attr(755,root,root) %{_libdir}/libTKXSBase.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKXSBase.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKXSBase.so.7.7
 # R: libTKBRep libTKDCAF libTKDraw libTKG2d libTKG3d libTKIGES libTKLCAF libTKMath libTKMeshVS libTKRWMesh libTKSTEP libTKSTEPBase libTKSTL libTKService libTKV3d libTKVRML libTKViewerTest libTKXCAF libTKXSBase libTKernel
 %attr(755,root,root) %{_libdir}/libTKXSDRAW.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKXSDRAW.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKXSDRAW.so.7.7
 # R: libTKBRep libTKCAF libTKCDF libTKLCAF libTKMath libTKXmlL libTKernel
 %attr(755,root,root) %{_libdir}/libTKXml.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKXml.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKXml.so.7.7
 # R: libTKCDF libTKLCAF libTKMath libTKernel
 %attr(755,root,root) %{_libdir}/libTKXmlL.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKXmlL.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKXmlL.so.7.7
 # R: R: libTKCDF libTKLCAF libTKTObj libTKXmlL libTKernel
 %attr(755,root,root) %{_libdir}/libTKXmlTObj.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKXmlTObj.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKXmlTObj.so.7.7
 # R: libTKBRep libTKCAF libTKCDF libTKLCAF libTKMath libTKService libTKXCAF libTKXml libTKXmlL libTKernel
 %attr(755,root,root) %{_libdir}/libTKXmlXCAF.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKXmlXCAF.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKXmlXCAF.so.7.7
 # R: (libstdc++) %{?with_tbb:tbb}
 %attr(755,root,root) %{_libdir}/libTKernel.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKernel.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKernel.so.7.7
 %dir %{_libdir}/opencascade
 %{_libdir}/opencascade/custom*.sh
 %{_libdir}/opencascade/env.sh
@@ -502,6 +507,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libTKCDF.so
 %attr(755,root,root) %{_libdir}/libTKDCAF.so
 %attr(755,root,root) %{_libdir}/libTKDraw.so
+%attr(755,root,root) %{_libdir}/libTKExpress.so
 %attr(755,root,root) %{_libdir}/libTKFeat.so
 %attr(755,root,root) %{_libdir}/libTKFillet.so
 %attr(755,root,root) %{_libdir}/libTKG2d.so
@@ -540,6 +546,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libTKVRML.so
 %attr(755,root,root) %{_libdir}/libTKViewerTest.so
 %attr(755,root,root) %{_libdir}/libTKXCAF.so
+%attr(755,root,root) %{_libdir}/libTKXDE.so
+%attr(755,root,root) %{_libdir}/libTKXDECascade.so
 %attr(755,root,root) %{_libdir}/libTKXDEDRAW.so
 %attr(755,root,root) %{_libdir}/libTKXDEIGES.so
 %attr(755,root,root) %{_libdir}/libTKXDESTEP.so
@@ -571,28 +579,28 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 # R: libTKBRep libTKBin libTKBinL libTKBinXCAF libTKCAF libTKCDF libTKG3d libTKLCAF libTKMath libTKService libTKStd libTKStdL libTKTInspectorAPI libTKTreeModel libTKV3d libTKVCAF libTKView libTKXCAF libTKXDESTEP libTKXml libTKXmlL libTKXmlXCAF libTKernel Qt5Core Qt5Gui Qt5Widgets
 %attr(755,root,root) %{_libdir}/libTKDFBrowser.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKDFBrowser.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKDFBrowser.so.7.7
 # R: libTKBRep libTKG3d libTKMath libTKTInspecorAPI libTKTreeModel libTKV3d libTKView libTKernel Qt5Core Qt5Gui Qt5Widgets
 %attr(755,root,root) %{_libdir}/libTKShapeView.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKShapeView.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKShapeView.so.7.7
 # R: libTKTInspectorAPI libTKTreeModel libTKernel Qt5Core Qt5Gui Qt5Widgets Qt5Xml
 %attr(755,root,root) %{_libdir}/libTKTInspector.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKTInspector.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKTInspector.so.7.7
 # R: libTKBRep libTKG3d libTKMath libTKPrim libTKTopAlgo libTKV3d libTKernel Qt5Core
 %attr(755,root,root) %{_libdir}/libTKTInspectorAPI.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKTInspectorAPI.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKTInspectorAPI.so.7.7
 # R: libTKCAF libTKDraw libTKTInspector liBTKTInspectorAPI libTKViewerTest libTKernel Qt5Core
 %attr(755,root,root) %{_libdir}/libTKToolsDraw.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKToolsDraw.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKToolsDraw.so.7.7
 # R: libTKTInspectorAPI libTKernel Qt5Core Qt5Gui Qt5Widgets
 %attr(755,root,root) %{_libdir}/libTKTreeModel.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKTreeModel.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKTreeModel.so.7.7
 # R: libTKG3d libTKMath libTKTInspectorAPI libTKTopAlgo libTKTreeModel libTKV3d libTKView libTKernel Qt5Core Qt5Gui Qt5Widgets
 %attr(755,root,root) %{_libdir}/libTKVInspector.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKVInspector.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKVInspector.so.7.7
 # R: libTKBRep libTKG3d libTKMath libTKOpenGl libTKService libTKV3d libTKernel Qt5Core Qt5Gui Qt5Widgets
 %attr(755,root,root) %{_libdir}/libTKView.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKView.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKView.so.7.7
 
 %files inspector-devel
 %defattr(644,root,root,755)
@@ -611,10 +619,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 # R: libTKBRep libTKG2d libTKG3d libTKMath libTKMesh libTKTopAlgo libTKV3D libTKernel libvtkCommonCore libvtkCommonDataModel libvtkCommonExecutionModel libvtkCommonMath libvtkCommonTransforms libvtkFiltersGeneral libvtkInteractionStyle libvtkRenderingCore libvtkRenderingFreeType libvtkRenderingOpenGL2
 %attr(755,root,root) %{_libdir}/libTKIVtk.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKIVtk.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKIVtk.so.7.7
 # R: libTKBRep libTKDraw libTKG3d libTKIVtk libTKMath libTKService libTKernel libX11 libvtkCommonCore libvtkCommonExecutionModel libvtkIOImage libvtkImagingCore libvtkInteractionStyle libvtkRenderingCore libvtkRenderingFreeType libvtkRenderingGL2PSOpenGL2 libvtkRenderingOpenGL2 tcl
 %attr(755,root,root) %{_libdir}/libTKIVtkDraw.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libTKIVtkDraw.so.7
+%attr(755,root,root) %ghost %{_libdir}/libTKIVtkDraw.so.7.7
 
 %files vtk-devel
 %defattr(644,root,root,755)
