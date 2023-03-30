@@ -10,8 +10,6 @@
 
 # TODO: - separate libs-x (80% of libraries), follow Fedora split or split packages as suggested by Jason Kraftcheck in Debian
 #	- OpenVR? (USE_OPENVR=ON) https://github.com/ValveSoftware/openvr
-#	- USE_RAPIDJSON=ON?
-#	- USE_DRACO=ON? https://github.com/google/draco
 
 # Conditional build:
 %bcond_without	apidocs		# API documentation
@@ -35,12 +33,14 @@ Source0:	https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=ffce0d6
 # Source0-md5:	3e803b63a5b3b8780baceb6eeb2e88a8
 Patch0:		%{name}-cmake.patch
 Patch1:		%{name}-inspector-data.patch
+Patch2:		%{name}-draco.patch
 URL:		https://www.opencascade.com/open-cascade-technology/
 %{?with_freeimage:BuildRequires:	FreeImage-devel}
 BuildRequires:	OpenGL-GLU-devel
 BuildRequires:	bison
 BuildRequires:	cmake >= 3.1
 BuildRequires:	doxygen >= 1:1.8.4
+BuildRequires:	draco-devel
 BuildRequires:	eigen3
 # avcodec avformat avutil swscale
 %{?with_ffmpeg:BuildRequires:	ffmpeg-devel}
@@ -217,6 +217,7 @@ Przykłady do OpenCASCADE.
 %setup -q -n occt-ffce0d6
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %{__sed} -i -e '/set (CMAKE_CONFIGURATION_TYPES/ { s/INTERNAL/STRING/;s/ FORCE// }' CMakeLists.txt
 %{__sed} -i -e 's/IMPORTED_LOCATION_RELEASE/IMPORTED_LOCATION_PLD/' adm/cmake/tbb.cmake
@@ -225,15 +226,19 @@ Przykłady do OpenCASCADE.
 install -d build
 cd build
 %cmake .. \
+	-D3RDPARTY_DRACO_INCLUDE_DIR=%{_includedir}/draco \
+	-D3RDPARTY_DRACO_LIBRARY=%{_libdir}/libdraco.so \
 	%{?with_qt:-D3RDPARTY_QT_DIR=/usr} \
 	%{?with_qt:-DBUILD_Inspector=ON} \
 	-DBUILD_YACCLEX=ON \
 	-DCMAKE_CONFIGURATION_TYPES=%{?debug:Debug}%{!?debug:PLD} \
 	-DINSTALL_DIR_CMAKE=%{_lib}/cmake/opencascade \
 	-DINSTALL_DIR_LIB=%{_lib} \
+	-DUSE_DRACO=ON \
 	-DUSE_EIGEN=ON \
 	%{?with_ffmpeg:-DUSE_FFMPEG=ON} \
 	%{?with_freeimage:-DUSE_FREEIMAGE=ON} \
+	-DUSE_RAPIDJSON=ON \
 	%{?with_tbb:-DUSE_TBB=ON} \
 	%{?with_vtk:-DUSE_VTK=ON}
 
@@ -394,7 +399,7 @@ rm -rf $RPM_BUILD_ROOT
 # R: libTKBO libTKBRep libTKBin libTKBinL libTKBinXCAF libTKBool libTKCAF libTKCDF libTKDCAF libTKDraw libTKFeat libTKFillet libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKHLR libTKIGES libTKLCAF libTKMath libTKMesh libTKOffset libTKPrim libTKService libTKShHealing libTKStd libTKStdL libTKTObj libTKTopAlgo libTKV3d libTKVCAF libTKViewerTest libTKXCAF libTKXDESTEP libTKXSBase libTKXml libTKXmlL libTKernel
 %attr(755,root,root) %{_libdir}/libTKQADraw.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libTKQADraw.so.7.7
-# R: libTKBRep libTKG3d liBTKLCAF libTKMath libTKMesh libTKService libTKXCAF libTKXDE libTKernel
+# R: libTKBRep libTKG3d liBTKLCAF libTKMath libTKMesh libTKService libTKXCAF libTKXDE libTKernel %{?with_draco:draco}
 %attr(755,root,root) %{_libdir}/libTKRWMesh.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libTKRWMesh.so.7.7
 # R: libTKBRep libTKG2d libTKG3d libTKGeomBase libTKMath libTKSTEP209 libTKSTEPAttr libTKSTEPBase libTKShHealing libTKTopAlgo libTKXSBase libTKernel

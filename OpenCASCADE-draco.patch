@@ -1,0 +1,42 @@
+--- occt-ffce0d6/adm/cmake/occt_toolkit.cmake.orig	2023-03-21 13:36:52.000000000 +0100
++++ occt-ffce0d6/adm/cmake/occt_toolkit.cmake	2023-03-30 19:08:14.199142733 +0200
+@@ -370,10 +370,6 @@ foreach (USED_ITEM ${USED_EXTERNLIB_AND_
+             add_definitions (-DHAVE_GLES2)
+           endif()
+ 
+-          if ("${CURRENT_CSF}" STREQUAL "${CSF_Draco}")
+-            set (CURRENT_CSF "")
+-            set (USED_DRACO 1)
+-          endif()
+           set (LIBRARY_FROM_CACHE 0)
+           separate_arguments (CURRENT_CSF)
+           foreach (CSF_LIBRARY ${CURRENT_CSF})
+@@ -412,28 +408,6 @@ foreach (USED_ITEM ${USED_EXTERNLIB_AND_
+   endif()
+ endforeach()
+ 
+-if (USE_DRACO)
+-  if (USED_DRACO)
+-    set (USED_LIB_RELEASE ${3RDPARTY_DRACO_LIBRARY})
+-    if (WIN32)
+-      set (USED_LIB_DEBUG ${3RDPARTY_DRACO_LIBRARY_DEBUG})
+-    else()
+-      set (USED_LIB_DEBUG ${3RDPARTY_DRACO_LIBRARY})
+-    endif()
+-    set (USED_LIB_CONF)
+-    if (EXISTS ${USED_LIB_DEBUG})
+-      set (USED_LIB_CONF "$<$<CONFIG:DEBUG>:${USED_LIB_DEBUG}>;${USED_LIB_CONF}")
+-    endif()
+-    if (EXISTS ${USED_LIB_RELEASE})
+-      set (USED_LIB_CONF "$<$<CONFIG:RELEASE>:${USED_LIB_RELEASE}>;${USED_LIB_CONF}")
+-      set (USED_LIB_CONF "$<$<CONFIG:RELWITHDEBINFO>:${USED_LIB_RELEASE}>;${USED_LIB_CONF}")
+-    endif()
+-    if (DEFINED USED_LIB_CONF)
+-      set_property (TARGET ${PROJECT_NAME} APPEND PROPERTY LINK_LIBRARIES "${USED_LIB_CONF}")
+-    endif()
+-  endif()
+-endif()
+-
+ if (APPLE)
+   list (FIND USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT X11 IS_X11_FOUND)
+   if (NOT ${IS_X11_FOUND} EQUAL -1)
