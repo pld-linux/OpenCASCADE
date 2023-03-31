@@ -13,8 +13,10 @@
 
 # Conditional build:
 %bcond_without	apidocs		# API documentation
+%bcond_without	draco		# Draco compression support
 %bcond_without	ffmpeg		# FFmpeg support
 %bcond_without	freeimage	# FreeImage support
+%bcond_without	openvr		# OpenVR support
 %bcond_without	qt		# Qt based inspector
 %bcond_without	tbb		# TBB support
 %bcond_without	vtk		# VTK toolkit
@@ -34,13 +36,14 @@ Source0:	https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=ffce0d6
 Patch0:		%{name}-cmake.patch
 Patch1:		%{name}-inspector-data.patch
 Patch2:		%{name}-draco.patch
+Patch3:		%{name}-openvr.patch
 URL:		https://www.opencascade.com/open-cascade-technology/
 %{?with_freeimage:BuildRequires:	FreeImage-devel}
 BuildRequires:	OpenGL-GLU-devel
 BuildRequires:	bison
 BuildRequires:	cmake >= 3.1
 BuildRequires:	doxygen >= 1:1.8.4
-BuildRequires:	draco-devel
+%{?with_draco:BuildRequires:	draco-devel}
 BuildRequires:	eigen3
 # avcodec avformat avutil swscale
 %{?with_ffmpeg:BuildRequires:	ffmpeg-devel}
@@ -51,6 +54,7 @@ BuildRequires:	jdk
 %endif
 BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtool
+%{?with_openvr:BuildRequires:	openvr-devel}
 BuildRequires:	rapidjson-devel
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.752
@@ -218,6 +222,7 @@ Przykłady do OpenCASCADE.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %{__sed} -i -e '/set (CMAKE_CONFIGURATION_TYPES/ { s/INTERNAL/STRING/;s/ FORCE// }' CMakeLists.txt
 %{__sed} -i -e 's/IMPORTED_LOCATION_RELEASE/IMPORTED_LOCATION_PLD/' adm/cmake/tbb.cmake
@@ -228,16 +233,18 @@ cd build
 %cmake .. \
 	-D3RDPARTY_DRACO_INCLUDE_DIR=%{_includedir}/draco \
 	-D3RDPARTY_DRACO_LIBRARY=%{_libdir}/libdraco.so \
+	-D3RDPARTY_OPENVR_INCLUDE_DIR=%{_includedir}/openvr \
 	%{?with_qt:-D3RDPARTY_QT_DIR=/usr} \
 	%{?with_qt:-DBUILD_Inspector=ON} \
 	-DBUILD_YACCLEX=ON \
 	-DCMAKE_CONFIGURATION_TYPES=%{?debug:Debug}%{!?debug:PLD} \
 	-DINSTALL_DIR_CMAKE=%{_lib}/cmake/opencascade \
 	-DINSTALL_DIR_LIB=%{_lib} \
-	-DUSE_DRACO=ON \
+	%{?with_draco:-DUSE_DRACO=ON} \
 	-DUSE_EIGEN=ON \
 	%{?with_ffmpeg:-DUSE_FFMPEG=ON} \
 	%{?with_freeimage:-DUSE_FREEIMAGE=ON} \
+	%{?with_openvr:-DUSE_OPENVR=ON} \
 	-DUSE_RAPIDJSON=ON \
 	%{?with_tbb:-DUSE_TBB=ON} \
 	%{?with_vtk:-DUSE_VTK=ON}
@@ -417,7 +424,7 @@ rm -rf $RPM_BUILD_ROOT
 # R: libTKBRep libTKLCAF libTKMath libTKTopAlgo libTKXCAF libTKXDE libTKernel
 %attr(755,root,root) %{_libdir}/libTKSTL.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libTKSTL.so.7.7
-# R: libTKMath libTKernel libGL libX11 fontconfig freetype %{?with_ffmpeg:ffmpeg-libs} %{?with_freeimage:FreeImage}
+# R: libTKMath libTKernel libGL libX11 fontconfig freetype %{?with_freeimage:FreeImage} %{?with_ffmpeg:ffmpeg-libs} %{?with_openvr:openvr}
 %attr(755,root,root) %{_libdir}/libTKService.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libTKService.so.7.7
 # R: libTKBrep libTKG2d libTKG3d libTKGeomAlgo libTKGeomBase libTKMath libTKTopAlgo libTKernel
