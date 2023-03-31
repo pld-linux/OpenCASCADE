@@ -1,0 +1,11 @@
+--- occt-ffce0d6/src/Aspect/Aspect_OpenVRSession.cxx.orig	2023-03-21 13:36:52.000000000 +0100
++++ occt-ffce0d6/src/Aspect/Aspect_OpenVRSession.cxx	2023-03-31 16:15:06.535765064 +0200
+@@ -168,7 +168,7 @@ struct Aspect_OpenVRSession::VRContext
+   vr::IVRSystem*          System; //!< OpenVR session object
+ 
+   //! Empty constructor.
+-  Aspect_OpenVRSession::VRContext() : System (NULL)
++  VRContext() : System (NULL)
+   {
+     memset (TrackedPoses, 0, sizeof(TrackedPoses));
+   }
