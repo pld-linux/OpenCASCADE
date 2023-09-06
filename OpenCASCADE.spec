@@ -9,7 +9,6 @@
 # published by the Open Source Initiative.
 
 # TODO: - separate libs-x (80% of libraries), follow Fedora split or split packages as suggested by Jason Kraftcheck in Debian
-#	- OpenVR? (USE_OPENVR=ON) https://github.com/ValveSoftware/openvr
 
 # Conditional build:
 %bcond_without	apidocs		# API documentation
@@ -24,15 +23,15 @@
 Summary:	OpenCASCADE CAE platform
 Summary(pl.UTF-8):	Platforma CAE OpenCASCADE
 Name:		OpenCASCADE
-Version:	7.7.1
+Version:	7.7.2
 Release:	1
 License:	LGPL v2.1 with Open CASCADE Exception v1.0
 Group:		Applications/Engineering
 # https://dev.opencascade.org/release (requires account)
 #Source0:	https://dev.opencascade.org/system/files/occt/OCC_%{version}_release/opencascade-%{version}.tgz
 # https://git.dev.opencascade.org/gitweb/?p=occt.git;a=tags
-Source0:	https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=ffce0d66bbaafe3a95984d0e61804c201b9995d2;sf=tgz;out=/occt-%{version}.tar.gz
-# Source0-md5:	3e803b63a5b3b8780baceb6eeb2e88a8
+Source0:	https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=cec1ecd0c9f3b3d2572c47035d11949e8dfa85e2;sf=tgz;out=/occt-%{version}.tar.gz
+# Source0-md5:	232887c0ef66e036e3f67b2b64f3896f
 Patch0:		%{name}-cmake.patch
 Patch1:		%{name}-inspector-data.patch
 Patch2:		%{name}-draco.patch
@@ -218,7 +217,7 @@ OpenCASCADE samples.
 Przykłady do OpenCASCADE.
 
 %prep
-%setup -q -n occt-ffce0d6
+%setup -q -n occt-cec1ecd
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
