@@ -13,7 +13,7 @@
 # Conditional build:
 %bcond_without	apidocs		# API documentation
 %bcond_without	draco		# Draco compression support
-%bcond_without	ffmpeg		# FFmpeg support
+%bcond_with	ffmpeg		# FFmpeg support, needs ffmpeg < 5
 %bcond_without	freeimage	# FreeImage support
 %bcond_without	openvr		# OpenVR support
 %bcond_without	qt		# Qt based inspector
@@ -24,7 +24,7 @@ Summary:	OpenCASCADE CAE platform
 Summary(pl.UTF-8):	Platforma CAE OpenCASCADE
 Name:		OpenCASCADE
 Version:	7.7.2
-Release:	1
+Release:	2
 License:	LGPL v2.1 with Open CASCADE Exception v1.0
 Group:		Applications/Engineering
 # https://dev.opencascade.org/release (requires account)
@@ -248,6 +248,7 @@ cd build
 	%{?with_openvr:-DUSE_OPENVR=ON} \
 	-DUSE_RAPIDJSON=ON \
 	%{?with_tbb:-DUSE_TBB=ON} \
+	-D3RDPARTY_VTK_INCLUDE_DIR=/usr/include/vtk \
 	%{?with_vtk:-DUSE_VTK=ON}
 
 # CMAKE_VERBOSE_MAKEFILE seems to be ignored
