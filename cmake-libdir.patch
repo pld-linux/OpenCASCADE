@@ -1,0 +1,11 @@
+--- OCCT-7_8_1/adm/templates/OpenCASCADEConfig.cmake.in~	2024-04-01 00:05:22.000000000 +0200
++++ OCCT-7_8_1/adm/templates/OpenCASCADEConfig.cmake.in	2024-12-09 22:50:52.914992145 +0100
+@@ -27,7 +27,7 @@
+ if (OpenCASCADE_INSTALL_PREFIX MATCHES "/cmake$")
+   get_filename_component (OpenCASCADE_INSTALL_PREFIX "${OpenCASCADE_INSTALL_PREFIX}" PATH)
+ endif()
+-if (OpenCASCADE_INSTALL_PREFIX MATCHES "/lib$")
++if (OpenCASCADE_INSTALL_PREFIX MATCHES "/lib(|64|x32)$")
+   get_filename_component (OpenCASCADE_INSTALL_PREFIX "${OpenCASCADE_INSTALL_PREFIX}" PATH)
+ endif()
+ if (OpenCASCADE_INSTALL_PREFIX MATCHES "/libs/${CMAKE_ANDROID_ARCH_ABI}$")

@@ -23,19 +23,21 @@
 Summary:	OpenCASCADE CAE platform
 Summary(pl.UTF-8):	Platforma CAE OpenCASCADE
 Name:		OpenCASCADE
-Version:	7.8.0
+Version:	7.8.1
 %define	tagver	%(echo %{version} | tr . _)
 Release:	1
 License:	LGPL v2.1 with Open CASCADE Exception v1.0
 Group:		Applications/Engineering
 #Source0Download https://dev.opencascade.org/release
 Source0:	https://github.com/Open-Cascade-SAS/OCCT/archive/V%{tagver}/OCCT-%{tagver}.tar.gz
-# Source0-md5:	a8307c25f082a58013a5bcf03a02e417
+# Source0-md5:	a1ae2c20422dd7a4352758667f34851f
 Patch0:		%{name}-cmake.patch
 Patch1:		%{name}-inspector-data.patch
 Patch2:		%{name}-draco.patch
 Patch3:		%{name}-openvr.patch
 Patch4:		%{name}-X.patch
+Patch5:		cmake-libdir.patch
+Patch6:		strict-const.patch
 URL:		https://www.opencascade.com/open-cascade-technology/
 %{?with_freeimage:BuildRequires:	FreeImage-devel}
 BuildRequires:	OpenGL-GLU-devel
@@ -218,11 +220,13 @@ Przykłady do OpenCASCADE.
 
 %prep
 %setup -q -n OCCT-%{tagver}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
+%patch -P 0 -p1
+%patch -P 1 -p1
+%patch -P 2 -p1
+%patch -P 3 -p1
+%patch -P 4 -p1
+%patch -P 5 -p1
+%patch -P 6 -p1
 
 %{__sed} -i -e '/set (CMAKE_CONFIGURATION_TYPES/ { s/INTERNAL/STRING/;s/ FORCE// }' CMakeLists.txt
 %{__sed} -i -e 's/IMPORTED_LOCATION_RELEASE/IMPORTED_LOCATION_PLD/' adm/cmake/tbb.cmake

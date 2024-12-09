@@ -1,0 +1,11 @@
+--- OCCT-7_8_1/src/StdPrs/StdPrs_BRepFont.cxx~	2024-04-01 00:05:22.000000000 +0200
++++ OCCT-7_8_1/src/StdPrs/StdPrs_BRepFont.cxx	2024-12-09 23:18:11.268003395 +0100
+@@ -457,7 +457,7 @@
+   for (short aContour = 0, aStartIndex = 0; aContour < anOutline->n_contours; ++aContour)
+   {
+     const FT_Vector* aPntList = &anOutline->points[aStartIndex];
+-    const char* aTags      = &anOutline->tags[aStartIndex];
++    unsigned char* aTags      = &anOutline->tags[aStartIndex];
+     const short anEndIndex = anOutline->contours[aContour];
+     const short aPntsNb    = (anEndIndex - aStartIndex) + 1;
+     aStartIndex = anEndIndex + 1;
