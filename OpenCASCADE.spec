@@ -8,7 +8,9 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-# TODO: - separate libs-x (80% of libraries), follow Fedora split or split packages as suggested by Jason Kraftcheck in Debian
+# TODO:
+# - separate libs-x (80% of libraries), follow Fedora split or split packages as suggested by Jason Kraftcheck in Debian
+# - fix cmake hardocing dependencies on exact tbb soname
 
 # Conditional build:
 %bcond_without	apidocs		# API documentation
@@ -25,7 +27,7 @@ Summary(pl.UTF-8):	Platforma CAE OpenCASCADE
 Name:		OpenCASCADE
 Version:	7.8.1
 %define	tagver	%(echo %{version} | tr . _)
-Release:	3
+Release:	4
 License:	LGPL v2.1 with Open CASCADE Exception v1.0
 Group:		Applications/Engineering
 #Source0Download https://dev.opencascade.org/release
@@ -81,6 +83,7 @@ BuildRequires:	graphviz
 BuildRequires:	inkscape
 BuildRequires:	texlive-pdftex
 %endif
+%{?with_tbb:%requires_eq tbb}
 Requires:	%{name}-libs = %{version}-%{release}
 %{?with_tbb:Requires:	tbb >= 2021.4}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -119,6 +122,7 @@ Requires:	%{name}-libs = %{version}-%{release}
 Requires:	libstdc++-devel
 # for CommandWindow.h
 Requires:	tcl-devel
+%{?with_tbb:%requires_eq tbb-devel}
 
 %description devel
 OpenCASCADE development files.
