@@ -22,6 +22,8 @@
 %bcond_without	tbb		# TBB support
 %bcond_without	vtk		# VTK toolkit
 
+%{?use_default_jdk}
+
 Summary:	OpenCASCADE CAE platform
 Summary(pl.UTF-8):	Platforma CAE OpenCASCADE
 Name:		OpenCASCADE
@@ -53,7 +55,7 @@ BuildRequires:	eigen3
 BuildRequires:	flex
 BuildRequires:	freetype-devel >= 2
 %ifnarch i386 i486
-BuildRequires:	jdk
+%buildrequires_jdk
 %endif
 BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtool
