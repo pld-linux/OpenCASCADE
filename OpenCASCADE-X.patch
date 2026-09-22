@@ -1,20 +1,20 @@
---- occt-cec1ecd/src/IVtkDraw/IVtkDraw_Interactor.cxx.orig	2023-07-21 17:36:51.000000000 +0200
-+++ occt-cec1ecd/src/IVtkDraw/IVtkDraw_Interactor.cxx	2023-09-06 19:55:42.845602803 +0200
+--- OCCT-7_9_3/src/IVtkDraw/IVtkDraw_Interactor.cxx.orig	2025-12-06 00:55:46.000000000 +0100
++++ OCCT-7_9_3/src/IVtkDraw/IVtkDraw_Interactor.cxx	2026-09-20 19:45:11.154391189 +0200
 @@ -19,6 +19,8 @@
- #include <vtkWin32RenderWindowInteractor.h>
- #include <vtkWin32OpenGLRenderWindow.h>
+   #include <vtkWin32RenderWindowInteractor.h>
+   #include <vtkWin32OpenGLRenderWindow.h>
  #else
-+#include <vtkXRenderWindowInteractor.h>
-+#include <vtkXOpenGLRenderWindow.h>
- #include <GL/glx.h>
++  #include <vtkXRenderWindowInteractor.h>
++  #include <vtkXOpenGLRenderWindow.h>
+   #include <GL/glx.h>
  
- // Preventing naming collisions between
+   // Preventing naming collisions between
 @@ -36,8 +38,6 @@
- #undef Success
- #endif
+     #undef Success
+   #endif
  
--#include <vtkXRenderWindowInteractor.h>
--#include <vtkXOpenGLRenderWindow.h>
+-  #include <vtkXRenderWindowInteractor.h>
+-  #include <vtkXOpenGLRenderWindow.h>
  #endif
  #include <vtkActor.h>
  #include <vtkActorCollection.h>
