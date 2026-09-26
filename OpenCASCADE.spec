@@ -10,7 +10,6 @@
 
 # TODO:
 # - separate libs-x (80% of libraries), follow Fedora split or split packages as suggested by Jason Kraftcheck in Debian
-# - fix cmake hardocing dependencies on exact tbb soname
 
 # Conditional build:
 %bcond_without	apidocs		# API documentation
@@ -22,14 +21,12 @@
 %bcond_without	tbb		# TBB support
 %bcond_without	vtk		# VTK toolkit
 
-%{?use_default_jdk}
-
 Summary:	OpenCASCADE CAE platform
 Summary(pl.UTF-8):	Platforma CAE OpenCASCADE
 Name:		OpenCASCADE
 Version:	7.9.3
 %define	tagver	%(echo %{version} | tr . _)
-Release:	1
+Release:	2
 License:	LGPL v2.1 with Open CASCADE Exception v1.0
 Group:		Applications/Engineering
 #Source0Download https://dev.opencascade.org/release
@@ -41,20 +38,16 @@ Patch5:		cmake-libdir.patch
 URL:		https://www.opencascade.com/open-cascade-technology/
 # FreeImagePlus library
 %{?with_freeimage:BuildRequires:	FreeImage-devel}
-BuildRequires:	OpenGL-GLU-devel
 BuildRequires:	OpenGL-GLX-devel
 BuildRequires:	bison >= 3.7.4
 BuildRequires:	cmake >= 3.10
-BuildRequires:	doxygen >= 1:1.8.4
 %{?with_draco:BuildRequires:	draco-devel}
 BuildRequires:	eigen3
 # avcodec avformat avutil swscale
 %{?with_ffmpeg:BuildRequires:	ffmpeg-devel}
 BuildRequires:	flex >= 2.6.4
+BuildRequires:	fontconfig-devel
 BuildRequires:	freetype-devel >= 2
-%ifnarch i386 i486
-%buildrequires_jdk
-%endif
 BuildRequires:	libstdc++-devel >= 6:7
 %{?with_openvr:BuildRequires:	openvr-devel}
 BuildRequires:	rapidjson-devel
@@ -65,7 +58,6 @@ BuildRequires:	tcl-devel >= 8.6
 BuildRequires:	tk-devel >= 8.6
 %{?with_vtk:BuildRequires:	vtk-devel}
 BuildRequires:	xorg-lib-libX11-devel
-BuildRequires:	xorg-lib-libXmu-devel
 BuildRequires:	xorg-proto-xproto-devel
 %if %{with qt}
 BuildRequires:	Qt5Core-devel >= 5
@@ -77,14 +69,12 @@ BuildRequires:	qt5-build >= 5
 BuildRequires:	qt5-linguist >= 5
 %endif
 %if %{with apidocs}
-BuildRequires:	doxygen
+BuildRequires:	doxygen >= 1:1.8.4
 BuildRequires:	graphviz
 BuildRequires:	inkscape
 BuildRequires:	texlive-pdftex
 %endif
-%{?with_tbb:%requires_eq tbb}
 Requires:	%{name}-libs = %{version}-%{release}
-%{?with_tbb:Requires:	tbb >= 2021.5}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		abiver			7.9
@@ -108,6 +98,7 @@ aplikacji PDM.
 Summary:	OpenCASCADE shared libraries
 Summary(pl.UTF-8):	Biblioteki współdzielone OpenCASCADE
 Group:		Libraries
+%{?with_tbb:Requires:	tbb >= 2021.5}
 
 %description libs
 OpenCASCADE shared libraries.
@@ -120,10 +111,10 @@ Summary:	OpenCASCADE development files
 Summary(pl.UTF-8):	Pliki programistyczne OpenCASCADE
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
+# included by public headers: GL/gl.h (OpenGl_GlNative.hxx), rapidjson (RWGltf_*.hxx)
+Requires:	OpenGL-devel
 Requires:	libstdc++-devel >= 6:7
-# for CommandWindow.h
-Requires:	tcl-devel
-%{?with_tbb:%requires_eq tbb-devel}
+Requires:	rapidjson-devel
 
 %description devel
 OpenCASCADE development files.
